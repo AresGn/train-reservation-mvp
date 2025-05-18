@@ -1,0 +1,82 @@
+<header>
+  <mat-toolbar color="primary" class="navbar">
+    <div class="container">
+      <div class="navbar-brand">
+        <a routerLink="/" class="logo">
+          <mat-icon>train</mat-icon>
+          <span class="logo-text">Train Réservation</span>
+        </a>
+        <button mat-icon-button class="menu-toggle" [matMenuTriggerFor]="mobileMenu" aria-label="Menu de navigation">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+
+      <!-- Menu pour les écrans larges -->
+      <nav class="nav-links">
+        <a mat-button routerLink="/search" routerLinkActive="active">Rechercher</a>
+        @if (isLoggedIn) {
+          <a mat-button routerLink="/profile" routerLinkActive="active">Mon Profil</a>
+          <a mat-button routerLink="/reservations" routerLinkActive="active">Mes Réservations</a>
+        }
+      </nav>
+
+      <!-- Boutons de connexion/déconnexion -->
+      <div class="auth-buttons">
+        @if (!isLoggedIn) {
+          <a mat-button routerLink="/login">Connexion</a>
+          <a mat-raised-button color="accent" routerLink="/register">S'inscrire</a>
+        } @else {
+          <button mat-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>account_circle</mat-icon>
+            <span class="username">Compte</span>
+          </button>
+          <mat-menu #userMenu="matMenu">
+            <a mat-menu-item routerLink="/profile">
+              <mat-icon>person</mat-icon>
+              <span>Mon profil</span>
+            </a>
+            <a mat-menu-item routerLink="/reservations">
+              <mat-icon>list</mat-icon>
+              <span>Mes réservations</span>
+            </a>
+            <button mat-menu-item>
+              <mat-icon>exit_to_app</mat-icon>
+              <span>Déconnexion</span>
+            </button>
+          </mat-menu>
+        }
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!-- Menu mobile -->
+  <mat-menu #mobileMenu="matMenu" class="mobile-menu">
+    <a mat-menu-item routerLink="/search">
+      <mat-icon>search</mat-icon>
+      <span>Rechercher</span>
+    </a>
+    @if (isLoggedIn) {
+      <a mat-menu-item routerLink="/profile">
+        <mat-icon>person</mat-icon>
+        <span>Mon profil</span>
+      </a>
+      <a mat-menu-item routerLink="/reservations">
+        <mat-icon>list</mat-icon>
+        <span>Mes réservations</span>
+      </a>
+      <button mat-menu-item>
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Déconnexion</span>
+      </button>
+    } @else {
+      <a mat-menu-item routerLink="/login">
+        <mat-icon>login</mat-icon>
+        <span>Connexion</span>
+      </a>
+      <a mat-menu-item routerLink="/register">
+        <mat-icon>person_add</mat-icon>
+        <span>S'inscrire</span>
+      </a>
+    }
+  </mat-menu>
+</header>

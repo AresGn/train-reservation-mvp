@@ -1,0 +1,151 @@
+// Palette de couleurs du projet
+$primary: #3F51B5;  // Bleu indigo
+$accent: #FF4081;   // Rose
+$white: #FFFFFF;
+$gray-light: #F5F5F5;
+$gray-dark: #212121;
+$footer-bg: #212121;
+$footer-text: #F5F5F5;
+
+.footer {
+  background-color: $footer-bg;
+  color: $footer-text;
+  padding: 40px 0 20px;
+  margin-top: 40px;
+  
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 100%;
+  margin-bottom: 20px;
+  
+  @media (min-width: 768px) {
+    min-width: calc(50% - 20px);
+  }
+  
+  @media (min-width: 992px) {
+    min-width: calc(25% - 20px);
+    margin-bottom: 0;
+  }
+  
+  h3 {
+    color: $white;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    position: relative;
+    
+    &::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background-color: $accent;
+      margin-top: 8px;
+    }
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      margin-bottom: 10px;
+      
+      a {
+        color: $footer-text;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-size: 14px;
+        
+        &:hover {
+          color: $accent;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+}
+
+.social-links {
+  display: flex;
+  gap: 16px;
+  
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: $white;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: $accent;
+      transform: translateY(-3px);
+    }
+    
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.newsletter {
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+    @media (min-width: 576px) {
+      flex-direction: row;
+    }
+    
+    button {
+      white-space: nowrap;
+    }
+  }
+}
+
+.copyright {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  
+  p {
+    font-size: 13px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+  }
+}

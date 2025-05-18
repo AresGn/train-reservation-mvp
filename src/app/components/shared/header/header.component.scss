@@ -1,0 +1,118 @@
+@use '@angular/material' as mat;
+
+// Palette de couleurs du projet
+$primary: #3F51B5;  // Bleu indigo
+$accent: #FF4081;   // Rose
+$white: #FFFFFF;
+$gray-light: #F5F5F5;
+$gray-dark: #212121;
+
+// Styles pour le header
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: auto;
+  padding: 0;
+  
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+    height: 64px;
+  }
+}
+
+// Logo et marque
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: $white;
+    
+    mat-icon {
+      margin-right: 8px;
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+    }
+    
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
+
+// Navigation pour les écrans larges (hidden on mobile)
+.nav-links {
+  display: none;
+  
+  a {
+    margin: 0 4px;
+    
+    &.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Boutons d'authentification (hidden on mobile)
+.auth-buttons {
+  display: none;
+  
+  a, button {
+    margin-left: 8px;
+  }
+  
+  .username {
+    margin-left: 4px;
+  }
+}
+
+// Media queries pour les tablettes et desktop
+@media screen and (min-width: 768px) {
+  .navbar-brand {
+    width: auto;
+    
+    .menu-toggle {
+      display: none;
+    }
+  }
+  
+  .nav-links {
+    display: flex;
+    align-items: center;
+  }
+  
+  .auth-buttons {
+    display: flex;
+    align-items: center;
+  }
+}
+
+// Animation pour l'élément actif
+@keyframes activeLink {
+  from { background-color: transparent; }
+  to { background-color: rgba(255, 255, 255, 0.2); }
+}
+
+.active {
+  animation: activeLink 0.3s ease forwards;
+}

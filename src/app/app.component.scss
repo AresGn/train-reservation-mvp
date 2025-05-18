@@ -1,0 +1,38 @@
+// Variable pour la hauteur de la barre de navigation
+$navbar-height: 64px;
+
+// Styles généraux pour le conteneur principal
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+}
+
+// Contenu principal avec espace pour le header fixe et expansion pour pousser le footer vers le bas
+.main-content {
+  flex: 1;
+  padding-top: calc(#{$navbar-height} + 20px);
+  padding-bottom: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
+}
+
+// Media queries pour les différentes tailles d'écran
+@media (min-width: 768px) {
+  .main-content {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-content {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}

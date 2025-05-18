@@ -1,0 +1,60 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <!-- Section des liens d'information -->
+      <div class="footer-section">
+        <h3>À propos</h3>
+        <ul>
+          <li><a routerLink="/about">Notre entreprise</a></li>
+          <li><a routerLink="/services">Nos services</a></li>
+          <li><a routerLink="/faq">FAQ</a></li>
+          <li><a routerLink="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Section des liens utiles -->
+      <div class="footer-section">
+        <h3>Liens utiles</h3>
+        <ul>
+          <li><a routerLink="/help">Aide</a></li>
+          <li><a routerLink="/terms">Conditions générales</a></li>
+          <li><a routerLink="/privacy">Politique de confidentialité</a></li>
+          <li><a routerLink="/cookies">Politique des cookies</a></li>
+        </ul>
+      </div>
+
+      <!-- Section des réseaux sociaux -->
+      <div class="footer-section">
+        <h3>Suivez-nous</h3>
+        <div class="social-links">
+          <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+            <mat-icon>facebook</mat-icon>
+          </a>
+          <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+            <mat-icon>twitter</mat-icon>
+          </a>
+          <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+            <mat-icon>instagram</mat-icon>
+          </a>
+          <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+            <mat-icon>linkedin</mat-icon>
+          </a>
+        </div>
+      </div>
+
+      <!-- Section d'inscription à la newsletter -->
+      <div class="footer-section newsletter">
+        <h3>Restez informé</h3>
+        <p>Abonnez-vous à notre newsletter pour recevoir les dernières offres et promotions.</p>
+        <div class="newsletter-form">
+          <a mat-raised-button color="accent" routerLink="/newsletter">S'abonner</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre de copyright -->
+    <div class="copyright">
+      <p>&copy; {{currentYear}} Train Réservation. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>
