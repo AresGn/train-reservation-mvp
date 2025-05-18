@@ -1,1 +1,102 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Reset et styles de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+/* Structure de l'application */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  /* Ajouter un padding-top pour laisser de l'espace pour le header fixe */
+  padding-top: 84px; /* 64px pour la hauteur du header + 20px de padding */
+}
+
+/* Media queries */
+@media screen and (min-width: 768px) {
+  .main-content {
+    padding-top: 92px; /* 72px pour la hauteur du header + 20px de padding */
+  }
+}
+
+/* Classes utilitaires */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Styles des boutons */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #3F51B5;
+  border: none;
+  
+  &:hover {
+    background-color: darken(#3F51B5, 10%);
+  }
+}
+
+.btn-outline {
+  color: #3F51B5;
+  background-color: transparent;
+  border: 1px solid #3F51B5;
+  
+  &:hover {
+    background-color: rgba(63, 81, 181, 0.1);
+  }
+}
+
+/* Styles pour les formulaires */
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  
+  &:focus {
+    outline: none;
+    border-color: #3F51B5;
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+  }
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Débogage - Bordures pour les éléments */
+.debug * {
+  outline: 1px solid red;
+}

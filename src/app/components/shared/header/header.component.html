@@ -1,82 +1,68 @@
-<header>
-  <mat-toolbar color="primary" class="navbar">
-    <div class="container">
-      <div class="navbar-brand">
-        <a routerLink="/" class="logo">
-          <mat-icon>train</mat-icon>
-          <span class="logo-text">Train Réservation</span>
-        </a>
-        <button mat-icon-button class="menu-toggle" [matMenuTriggerFor]="mobileMenu" aria-label="Menu de navigation">
-          <mat-icon>menu</mat-icon>
-        </button>
-      </div>
+<header class="header">
+  <div class="container">
+    <!-- Logo et nom de l'application -->
+    <div class="header-logo">
+      <a routerLink="/">
+        <div class="logo-container">
+          <svg class="train-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.2 20L19 22H5L6.8 20H17.2Z" fill="currentColor"/>
+            <path d="M4 15.5C4 17.43 5.57 19 7.5 19L6 20.5V21H18V20.5L16.5 19C18.43 19 20 17.43 20 15.5V5C20 2.5 17.5 2 12 2C6.5 2 4 2.5 4 5V15.5ZM12 4C16.03 4 18 4.5 18 5C18 5.5 16.03 6 12 6C7.97 6 6 5.5 6 5C6 4.5 7.97 4 12 4ZM6 7.05C7.5 7.5 9.65 7.75 12 7.75C14.35 7.75 16.5 7.5 18 7.05V15.5C18 16.33 17.33 17 16.5 17H7.5C6.67 17 6 16.33 6 15.5V7.05Z" fill="currentColor"/>
+            <path d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z" fill="currentColor"/>
+          </svg>
+          <span class="app-name">TrainBooker</span>
+        </div>
+      </a>
+    </div>
 
-      <!-- Menu pour les écrans larges -->
-      <nav class="nav-links">
-        <a mat-button routerLink="/search" routerLinkActive="active">Rechercher</a>
-        @if (isLoggedIn) {
-          <a mat-button routerLink="/profile" routerLinkActive="active">Mon Profil</a>
-          <a mat-button routerLink="/reservations" routerLinkActive="active">Mes Réservations</a>
-        }
-      </nav>
+    <!-- Bouton hamburger pour mobile -->
+    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle navigation menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
 
-      <!-- Boutons de connexion/déconnexion -->
+    <!-- Menu de navigation -->
+    <nav class="nav-menu" [class.active]="menuOpen">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a routerLink="/search" routerLinkActive="active">Rechercher</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/promotions" routerLinkActive="active">Promotions</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/help" routerLinkActive="active">Aide</a>
+        </li>
+      </ul>
+
+      <!-- Boutons d'authentification -->
       <div class="auth-buttons">
         @if (!isLoggedIn) {
-          <a mat-button routerLink="/login">Connexion</a>
-          <a mat-raised-button color="accent" routerLink="/register">S'inscrire</a>
+          <a routerLink="/login" class="btn-login">Se connecter</a>
+          <a routerLink="/register" class="btn-register">S'inscrire</a>
         } @else {
-          <button mat-button [matMenuTriggerFor]="userMenu">
-            <mat-icon>account_circle</mat-icon>
-            <span class="username">Compte</span>
-          </button>
-          <mat-menu #userMenu="matMenu">
-            <a mat-menu-item routerLink="/profile">
-              <mat-icon>person</mat-icon>
-              <span>Mon profil</span>
-            </a>
-            <a mat-menu-item routerLink="/reservations">
-              <mat-icon>list</mat-icon>
-              <span>Mes réservations</span>
-            </a>
-            <button mat-menu-item>
-              <mat-icon>exit_to_app</mat-icon>
-              <span>Déconnexion</span>
+          <div class="user-menu-container" (clickOutside)="closeUserMenu()">
+            <button class="user-avatar" (click)="toggleUserMenu()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
             </button>
-          </mat-menu>
+            <div class="user-dropdown" [class.active]="userMenuOpen">
+              <div class="user-info">
+                <p class="user-name">{{ userName }}</p>
+                <p class="user-email">{{ userEmail }}</p>
+              </div>
+              <ul class="dropdown-menu">
+                <li><a routerLink="/profile">Mon profil</a></li>
+                <li><a routerLink="/my-bookings">Mes réservations</a></li>
+                <li><a routerLink="/preferences">Préférences</a></li>
+                <li><a (click)="logout()" class="logout-button">Déconnexion</a></li>
+              </ul>
+            </div>
+          </div>
         }
       </div>
-    </div>
-  </mat-toolbar>
-
-  <!-- Menu mobile -->
-  <mat-menu #mobileMenu="matMenu" class="mobile-menu">
-    <a mat-menu-item routerLink="/search">
-      <mat-icon>search</mat-icon>
-      <span>Rechercher</span>
-    </a>
-    @if (isLoggedIn) {
-      <a mat-menu-item routerLink="/profile">
-        <mat-icon>person</mat-icon>
-        <span>Mon profil</span>
-      </a>
-      <a mat-menu-item routerLink="/reservations">
-        <mat-icon>list</mat-icon>
-        <span>Mes réservations</span>
-      </a>
-      <button mat-menu-item>
-        <mat-icon>exit_to_app</mat-icon>
-        <span>Déconnexion</span>
-      </button>
-    } @else {
-      <a mat-menu-item routerLink="/login">
-        <mat-icon>login</mat-icon>
-        <span>Connexion</span>
-      </a>
-      <a mat-menu-item routerLink="/register">
-        <mat-icon>person_add</mat-icon>
-        <span>S'inscrire</span>
-      </a>
-    }
-  </mat-menu>
+    </nav>
+  </div>
 </header>

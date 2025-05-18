@@ -1,0 +1,180 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Règles et Lignes Directrices pour Joumas - Projet de Réservation de Train
+
+## Aperçu des Responsabilités
+
+Tu es responsable de la deuxième partie du parcours utilisateur, qui comprend:
+
+1. **Page de détails des passagers** (`/passenger-details`)
+2. **Page de paiement** (`/payment`)
+3. **Page de confirmation** (`/confirmation`)
+
+Le header (navbar) et le footer ont déjà été complétés, tu n'as donc pas à t'en préoccuper.
+
+## Approche Mobile First - IMPORTANT!
+
+Notre projet suit une approche **Mobile First**. Cela signifie que:
+
+- Tu dois concevoir et développer d'abord pour les écrans mobiles, puis adapter pour les écrans plus grands
+- Utilise les media queries pour élargir progressivement le design (pas l'inverse)
+- Teste régulièrement sur différentes tailles d'écran (utilise le mode responsive de Chrome DevTools)
+- Référence: [Guide de conception Mobile First](https://www.browserstack.com/guide/how-to-implement-mobile-first-design)
+
+## Structure des Fichiers
+
+Voici les dossiers et fichiers dont tu es responsable:
+
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── reservation/
+│   │   │   ├── passenger-details/      # À implémenter
+│   │   │   ├── payment/                # À implémenter  
+│   │   │   └── confirmation/           # À implémenter
+│   ├── services/
+│   │   ├── reservation.service.ts      # À implémenter
+│   │   └── payment.service.ts          # À implémenter
+│   ├── models/
+│   │   ├── reservation.model.ts        # À implémenter
+│   │   └── payment.model.ts            # À implémenter
+│   └── assets/
+│       └── styles/
+│           └── reservation-styles/     # Si nécessaire
+```
+
+## Design et UI/UX
+
+### Palette de Couleurs
+Respecte scrupuleusement cette palette:
+- Couleur principale: `#3F51B5` (bleu indigo)
+- Couleur secondaire: `#FF4081` (rose)
+- Couleurs neutres: `#F5F5F5` (gris clair), `#FFFFFF` (blanc), `#212121` (gris foncé)
+- Couleurs d'accentuation: `#4CAF50` (vert pour les succès), `#F44336` (rouge pour les erreurs)
+
+### Typographie
+- Police principale: Roboto
+- Titres: Roboto Medium, 24px/20px/18px
+- Corps du texte: Roboto Regular, 16px
+- Texte secondaire: Roboto Light, 14px
+
+### Exigences Spécifiques par Page
+
+#### 1. Page de Détails Passager (`/passenger-details`)
+- Formulaire réactif Angular pour chaque passager
+- Calcul dynamique du prix en fonction de l'âge (réduction)
+- Validation complète des formulaires
+- Navigation possible vers l'étape précédente sans perte de données
+
+#### 2. Page de Paiement (`/payment`)
+- Résumé clair de la réservation
+- Formulaire sécurisé pour les détails de paiement
+- Simulation de la vérification du paiement
+- Messages d'erreur explicites
+
+#### 3. Page de Confirmation (`/confirmation`)
+- Affichage des détails complets du billet
+- Option de téléchargement PDF (peut être simulée)
+- Boutons de partage et d'ajout au calendrier
+- Animation de confirmation réussie
+
+## Meilleures Pratiques à Suivre
+
+### Architecture Angular
+- Utilise les formulaires réactifs d'Angular
+- Implémente des gardes de routes pour protéger les pages
+- Sépare clairement la logique métier dans les services
+- Utilise les observables et la gestion d'état
+
+### Conventions de Code
+- Respecte le style de code établi
+- Commente le code complexe
+- Utilise des noms de variables et fonctions descriptifs
+- Préfixe les composants et services avec un namespace approprié
+
+### Responsive Design
+- Utilise les breakpoints standard:
+  - Mobile: 0-599px
+  - Tablette: 600-959px
+  - Desktop: 960px et plus
+- Utilise des unités relatives (rem, %, vh/vw) plutôt que des pixels
+- Teste sur différents appareils
+
+### Performance
+- Évite les calculs complexes dans les templates
+- Optimise les images et assets
+- Implémente la lazy loading où approprié
+- Minimise les appels HTTP (utilise des services avec cache)
+
+## Workflow de Développement
+
+### Branches Git
+- Crée tes branches à partir de `develop`
+- Utilise le préfixe `feature/reservation/*` pour tes branches
+- Exemple: `feature/reservation/passenger-details`
+
+### Pull Requests
+- Fais des PR vers la branche `develop`
+- Demande ma review avant de merger
+- Résous tous les conflits avant de demander la review
+
+### Tests
+- Écris des tests unitaires pour tes services
+- Vérifie la validation des formulaires
+- Teste les cas limites et d'erreur
+
+## Données Mockées
+
+Pour permettre un développement indépendant, crée tes propres données de test:
+
+```typescript
+// Exemple de données mockées pour les réservations
+const MOCK_RESERVATIONS = [
+  {
+    id: 'res-001',
+    userId: 'user-123',
+    trainId: 'train-456',
+    departureLocation: 'Paris',
+    arrivalLocation: 'Lyon',
+    departureDate: new Date('2023-12-15'),
+    departureTime: '09:00',
+    passengers: [
+      {
+        name: 'Jean Dupont',
+        age: 35,
+        ticketType: 'business',
+        emergencyContact: '+33 6 12 34 56 78',
+        price: 75.50
+      }
+    ],
+    totalPrice: 75.50,
+    status: 'confirmed'
+  }
+];
+```
+
+## Communication
+
+- Pour toute question ou blocage, contacte-moi directement
+- Prévois de courtes sessions de synchronisation hebdomadaires
+- Documente les décisions importantes
+- Partage tôt les interfaces que tu crées pour que je puisse m'aligner dessus
+
+
+## Liens et Ressources Utiles
+
+- [Documentation Angular](https://angular.io/docs)
+- [Angular Material](https://material.angular.io/) (recommandé pour les composants UI)
+- [Guide de Design Mobile First](https://www.browserstack.com/guide/how-to-implement-mobile-first-design)
+- [Principes de Material Design](https://material.io/design/introduction)
+
+---
+
+N'hésite pas à me contacter si tu as besoin de clarifications ou d'aide supplémentaire. Bonne chance avec ton travail!
+
+Cordialement,
+Arès 

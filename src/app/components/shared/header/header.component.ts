@@ -1,25 +1,89 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgIf, NgClass } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
 
 @Component({
   selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    RouterModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule
-  ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+    NgIf,
+    NgClass,
+    RouterLink,
+    RouterLinkActive,
+    ClickOutsideDirective
+  ]
 })
-export class HeaderComponent {
-  isLoggedIn = false; // Simuler l'état de connexion, à remplacer par un service d'authentification réel
+export class HeaderComponent implements OnInit {
+  menuOpen = false;
+  userMenuOpen = false;
+  isLoggedIn = false;
+  userName = '';
+  userEmail = '';
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    // Pour le MVP, on peut simuler un état de connexion
+    // Dans une version finale, on utiliserait le service d'authentification
+    this.checkLoginStatus();
+    
+    // S'abonner aux changements d'état de connexion
+    this.authService.authStateChanged.subscribe(() => {
+      this.checkLoginStatus();
+    });
+
+    // Pour le test, simulons une connexion après 2 secondes
+    // setTimeout(() => {
+    //   this.authService.login('test@example.com', 'password');
+    // }, 2000);
+  }
+
+  checkLoginStatus(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+    if (this.isLoggedIn) {
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        this.userName = `${user.firstName} ${user.lastName}`;
+        this.userEmail = user.email;
+      }
+    }
+  }
+
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+    if (this.menuOpen) {
+      // Fermer le menu utilisateur s'il est ouvert
+      this.userMenuOpen = false;
+    }
+  }
+
+  toggleUserMenu(): void {
+    this.userMenuOpen = !this.userMenuOpen;
+  }
+
+  closeUserMenu(): void {
+    this.userMenuOpen = false;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+    this.closeUserMenu();
+  }
+
+  // Fermer le menu lorsque l'écran est redimensionné
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    if (window.innerWidth > 768) {
+      this.menuOpen = false;
+    }
+  }
 }

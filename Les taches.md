@@ -4,11 +4,17 @@
 
 Pour éviter les conflits lors des pull requests sur GitHub, voici une séparation claire des responsabilités, fichiers et fonctionnalités pour chaque développeur.
 
+## 🔴 Note Importante: Mise à jour des tâches
+
+- **Le header (navbar) et le footer ont déjà été complétés** et sont fonctionnels
+- **L'approche de design adoptée est "Mobile First"** - tous les composants doivent être conçus d'abord pour les appareils mobiles, puis adaptés aux écrans plus grands
+- Le design global doit suivre les principes de Material Design avec la palette de couleurs spécifiée dans le Guide.md
+
 ### Responsabilités d'Arès
 
 #### Dossiers et Fichiers
 - `src/app/components/auth/` (dossier complet)
-- `src/app/components/shared/header/`
+- `src/app/components/shared/header/` ✅ (déjà complété)
 - `src/app/components/reservation/search/`
 - `src/app/components/reservation/select-train/`
 - `src/app/services/auth.service.ts`
@@ -29,7 +35,7 @@ Pour éviter les conflits lors des pull requests sur GitHub, voici une séparati
    - Filtres et tris des options de train
    - Sélection d'un train
 
-3. **Header et Navigation**
+3. **Header et Navigation** ✅ (déjà complété)
    - Menu de navigation principal
    - État de connexion/déconnexion
    - Navigation entre sections
@@ -46,7 +52,7 @@ Pour éviter les conflits lors des pull requests sur GitHub, voici une séparati
 - `src/app/components/reservation/passenger-details/`
 - `src/app/components/reservation/payment/`
 - `src/app/components/reservation/confirmation/`
-- `src/app/components/shared/footer/`
+- `src/app/components/shared/footer/` ✅ (déjà complété)
 - `src/app/services/reservation.service.ts`
 - `src/app/services/payment.service.ts`
 - `src/assets/styles/reservation-styles/` (si nécessaire pour les styles spécifiques)
@@ -69,7 +75,7 @@ Pour éviter les conflits lors des pull requests sur GitHub, voici une séparati
    - Génération de billets PDF (simulation)
    - Options de partage
 
-4. **Footer et Informations Supplémentaires**
+4. **Footer et Informations Supplémentaires** ✅ (déjà complété)
    - Liens d'information
    - Mentions légales
    - Support et contact
