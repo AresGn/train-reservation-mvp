@@ -1,1 +1,158 @@
-<p>search works!</p>
+<div class="search-container">
+  <div class="search-card">
+    <h1 class="title">Rechercher un train</h1>
+    <p class="subtitle">Planifiez votre voyage sur le réseau ferroviaire gabonais</p>
+
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form">
+      <div class="form-row">
+        <!-- Champ Lieu de départ -->
+        <div class="form-group">
+          <label for="departureLocation">Gare de départ</label>
+          <div class="input-container">
+            <input 
+              type="text" 
+              id="departureLocation" 
+              formControlName="departureLocation"
+              [ngClass]="{'is-invalid': formSubmitted && f['departureLocation'].errors}" 
+              autocomplete="off"
+            >
+            <div *ngIf="filteredDepartureStations.length > 0" class="suggestions-list">
+              <div 
+                *ngFor="let station of filteredDepartureStations" 
+                class="suggestion-item" 
+                (click)="onDepartureStationSelect(station.name)"
+              >
+                <span class="station-name">{{ station.name }}</span>
+                <span class="station-city" *ngIf="station.city !== station.name">({{ station.city }})</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="formSubmitted && f['departureLocation'].errors" class="invalid-feedback">
+            <div *ngIf="f['departureLocation'].errors['required']">La gare de départ est requise</div>
+          </div>
+        </div>
+
+        <!-- Champ Lieu d'arrivée -->
+        <div class="form-group">
+          <label for="arrivalLocation">Gare d'arrivée</label>
+          <div class="input-container">
+            <input 
+              type="text" 
+              id="arrivalLocation" 
+              formControlName="arrivalLocation"
+              [ngClass]="{'is-invalid': formSubmitted && f['arrivalLocation'].errors}" 
+              autocomplete="off"
+            >
+            <div *ngIf="filteredArrivalStations.length > 0" class="suggestions-list">
+              <div 
+                *ngFor="let station of filteredArrivalStations" 
+                class="suggestion-item" 
+                (click)="onArrivalStationSelect(station.name)"
+              >
+                <span class="station-name">{{ station.name }}</span>
+                <span class="station-city" *ngIf="station.city !== station.name">({{ station.city }})</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="formSubmitted && f['arrivalLocation'].errors" class="invalid-feedback">
+            <div *ngIf="f['arrivalLocation'].errors['required']">La gare d'arrivée est requise</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- Champ Date de départ -->
+        <div class="form-group">
+          <label for="departureDate">Date de départ</label>
+          <div class="input-container">
+            <input 
+              type="date" 
+              id="departureDate" 
+              formControlName="departureDate"
+              [ngClass]="{'is-invalid': formSubmitted && f['departureDate'].errors}" 
+              [min]="minDate"
+              [max]="maxDate"
+            >
+          </div>
+          <div *ngIf="formSubmitted && f['departureDate'].errors" class="invalid-feedback">
+            <div *ngIf="f['departureDate'].errors['required']">La date de départ est requise</div>
+          </div>
+        </div>
+
+        <!-- Champ Heure approximative -->
+        <div class="form-group">
+          <label for="departureTime">Heure approximative (optionnel)</label>
+          <div class="input-container">
+            <select id="departureTime" formControlName="departureTime">
+              <option value="">Toute heure</option>
+              <option value="matin">Matin (6h-12h)</option>
+              <option value="apres-midi">Après-midi (12h-18h)</option>
+              <option value="soir">Soir (18h-0h)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- Champ Nombre de passagers -->
+        <div class="form-group">
+          <label for="passengerCount">Nombre de passagers</label>
+          <div class="input-container number-input">
+            <button 
+              type="button" 
+              class="number-button" 
+              (click)="searchForm.get('passengerCount')?.setValue(Math.max(1, (searchForm.get('passengerCount')?.value || 0) - 1))"
+              [disabled]="searchForm.get('passengerCount')?.value <= 1"
+            >-</button>
+            <input 
+              type="number" 
+              id="passengerCount" 
+              formControlName="passengerCount"
+              min="1" 
+              max="10"
+              [ngClass]="{'is-invalid': formSubmitted && f['passengerCount'].errors}" 
+            >
+            <button 
+              type="button" 
+              class="number-button" 
+              (click)="searchForm.get('passengerCount')?.setValue(Math.min(10, (searchForm.get('passengerCount')?.value || 0) + 1))"
+              [disabled]="searchForm.get('passengerCount')?.value >= 10"
+            >+</button>
+          </div>
+          <div *ngIf="formSubmitted && f['passengerCount'].errors" class="invalid-feedback">
+            <div *ngIf="f['passengerCount'].errors['required']">Le nombre de passagers est requis</div>
+            <div *ngIf="f['passengerCount'].errors['min']">Minimum 1 passager</div>
+            <div *ngIf="f['passengerCount'].errors['max']">Maximum 10 passagers</div>
+          </div>
+        </div>
+
+        <!-- Champ Catégorie de passager -->
+        <div class="form-group">
+          <label for="passengerCategory">Catégorie de passager</label>
+          <div class="input-container">
+            <select id="passengerCategory" formControlName="passengerCategory">
+              <option *ngFor="let category of passengerCategories" [value]="category.value">
+                {{ category.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bouton de recherche -->
+      <button type="submit" class="search-button">
+        Rechercher
+      </button>
+    </form>
+
+    <!-- Informations tarifaires -->
+    <div class="pricing-info">
+      <h3>Informations tarifaires</h3>
+      <ul>
+        <li>Prix standard Owendo-Franceville: 35 000 FCFA</li>
+        <li>Réduction étudiants: 30%</li>
+        <li>Réduction 3ème âge: 35%</li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -39,6 +40,14 @@ export class HeaderComponent implements OnInit {
       this.checkLoginStatus();
     });
 
+    // Fermer le menu lorsque l'utilisateur navigue vers une autre page
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.menuOpen = false;
+      this.userMenuOpen = false;
+    });
+
     // Pour le test, simulons une connexion après 2 secondes
     // setTimeout(() => {
     //   this.authService.login('test@example.com', 'password');
@@ -61,6 +70,11 @@ export class HeaderComponent implements OnInit {
     if (this.menuOpen) {
       // Fermer le menu utilisateur s'il est ouvert
       this.userMenuOpen = false;
+      // Ajouter une classe pour empêcher le défilement du body
+      document.body.classList.add('menu-open');
+    } else {
+      // Supprimer la classe lorsque le menu est fermé
+      document.body.classList.remove('menu-open');
     }
   }
 
@@ -72,10 +86,18 @@ export class HeaderComponent implements OnInit {
     this.userMenuOpen = false;
   }
 
+  closeMenu(): void {
+    if (this.menuOpen) {
+      this.menuOpen = false;
+      document.body.classList.remove('menu-open');
+    }
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
     this.closeUserMenu();
+    this.closeMenu();
   }
 
   // Fermer le menu lorsque l'écran est redimensionné
@@ -83,6 +105,7 @@ export class HeaderComponent implements OnInit {
   onResize(event: any): void {
     if (window.innerWidth > 768) {
       this.menuOpen = false;
+      document.body.classList.remove('menu-open');
     }
   }
 }

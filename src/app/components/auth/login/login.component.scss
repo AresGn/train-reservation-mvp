@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+// Palette de couleurs
+$primary-color: #3F51B5;
+$secondary-color: #FF4081;
+$neutral-light: #F5F5F5;
+$white: #FFFFFF;
+$dark-text: #212121;
+$success-color: #4CAF50;
+$error-color: #F44336;
+
+// Mixins pour responsive design
+@mixin tablet {
+  @media (min-width: 600px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: 960px) {
+    @content;
+  }
+}
+
+// Base de l'approche mobile-first
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+  background-color: $neutral-light;
+  font-family: 'Roboto', sans-serif;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: $white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 24px 16px;
+
+  @include tablet {
+    padding: 32px;
+  }
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 500;
+  color: $dark-text;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: rgba($dark-text, 0.7);
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.login-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: $dark-text;
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid rgba($dark-text, 0.2);
+  border-radius: 4px;
+  background-color: $white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+  }
+
+  &.is-invalid {
+    border-color: $error-color;
+  }
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  
+  input {
+    flex: 1;
+    padding-right: 48px;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: rgba($dark-text, 0.6);
+    
+    &:hover {
+      color: $primary-color;
+    }
+  }
+}
+
+.invalid-feedback {
+  color: $error-color;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.error-message {
+  background-color: rgba($error-color, 0.1);
+  border-left: 3px solid $error-color;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 0 4px 4px 0;
+  
+  p {
+    margin: 0;
+    color: $error-color;
+    font-size: 14px;
+  }
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    
+    input[type="checkbox"] {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    
+    .checkbox-label {
+      font-size: 14px;
+      color: $dark-text;
+    }
+  }
+}
+
+.submit-button {
+  width: 100%;
+  padding: 14px;
+  background-color: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative;
+  
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+  
+  &:disabled {
+    background-color: rgba($primary-color, 0.6);
+    cursor: not-allowed;
+  }
+  
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba($white, 0.3);
+    border-radius: 50%;
+    border-top-color: $white;
+    animation: spin 1s ease-in-out infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.register-link {
+  margin-top: 24px;
+  text-align: center;
+  
+  p {
+    color: $dark-text;
+    font-size: 14px;
+    
+    a {
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: 500;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

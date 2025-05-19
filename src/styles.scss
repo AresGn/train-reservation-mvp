@@ -101,3 +101,8 @@ label {
 .debug * {
   outline: 1px solid red;
 }
+
+// Empêcher le défilement du body lorsque le menu mobile est ouvert
+body.menu-open {
+  overflow: hidden;
+}

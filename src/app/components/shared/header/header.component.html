@@ -15,34 +15,34 @@
     </div>
 
     <!-- Bouton hamburger pour mobile -->
-    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle navigation menu">
+    <button class="menu-toggle" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen" aria-label="Toggle navigation menu">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
 
     <!-- Menu de navigation -->
-    <nav class="nav-menu" [class.active]="menuOpen">
+    <nav class="nav-menu" [class.active]="menuOpen" (clickOutside)="closeMenu()">
       <ul class="nav-list">
         <li class="nav-item">
-          <a routerLink="/search" routerLinkActive="active">Rechercher</a>
+          <a routerLink="/search" routerLinkActive="active" (click)="closeMenu()">Rechercher</a>
         </li>
         <li class="nav-item">
-          <a routerLink="/promotions" routerLinkActive="active">Promotions</a>
+          <a routerLink="/promotions" routerLinkActive="active" (click)="closeMenu()">Promotions</a>
         </li>
         <li class="nav-item">
-          <a routerLink="/help" routerLinkActive="active">Aide</a>
+          <a routerLink="/help" routerLinkActive="active" (click)="closeMenu()">Aide</a>
         </li>
       </ul>
 
       <!-- Boutons d'authentification -->
       <div class="auth-buttons">
         @if (!isLoggedIn) {
-          <a routerLink="/login" class="btn-login">Se connecter</a>
-          <a routerLink="/register" class="btn-register">S'inscrire</a>
+          <a routerLink="/login" class="btn-login" (click)="closeMenu()">Se connecter</a>
+          <a routerLink="/register" class="btn-register" (click)="closeMenu()">S'inscrire</a>
         } @else {
           <div class="user-menu-container" (clickOutside)="closeUserMenu()">
-            <button class="user-avatar" (click)="toggleUserMenu()">
+            <button class="user-avatar" (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
@@ -54,9 +54,9 @@
                 <p class="user-email">{{ userEmail }}</p>
               </div>
               <ul class="dropdown-menu">
-                <li><a routerLink="/profile">Mon profil</a></li>
-                <li><a routerLink="/my-bookings">Mes réservations</a></li>
-                <li><a routerLink="/preferences">Préférences</a></li>
+                <li><a routerLink="/profile" (click)="closeUserMenu()">Mon profil</a></li>
+                <li><a routerLink="/my-bookings" (click)="closeUserMenu()">Mes réservations</a></li>
+                <li><a routerLink="/preferences" (click)="closeUserMenu()">Préférences</a></li>
                 <li><a (click)="logout()" class="logout-button">Déconnexion</a></li>
               </ul>
             </div>
