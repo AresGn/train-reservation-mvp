@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'sass:color';
 
 /* Reset et styles de base */
 * {
@@ -60,7 +61,7 @@ body {
   border: none;
   
   &:hover {
-    background-color: darken(#3F51B5, 10%);
+    background-color: color.adjust(#3F51B5, $lightness: -10%);
   }
 }
 

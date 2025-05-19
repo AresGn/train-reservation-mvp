@@ -22,7 +22,7 @@ Notre projet suit une approche **Mobile First**. Cela signifie que:
 - Tu dois concevoir et développer d'abord pour les écrans mobiles, puis adapter pour les écrans plus grands
 - Utilise les media queries pour élargir progressivement le design (pas l'inverse)
 - Teste régulièrement sur différentes tailles d'écran (utilise le mode responsive de Chrome DevTools)
-- Référence: [Guide de conception Mobile First](https://www.browserstack.com/guide/how-to-implement-mobile-first-design)
+- Référence: [Guide de conception Mobile First](mdc:https:/www.browserstack.com/guide/how-to-implement-mobile-first-design)
 
 ## Structure des Fichiers
 
@@ -167,10 +167,10 @@ const MOCK_RESERVATIONS = [
 
 ## Liens et Ressources Utiles
 
-- [Documentation Angular](https://angular.io/docs)
-- [Angular Material](https://material.angular.io/) (recommandé pour les composants UI)
-- [Guide de Design Mobile First](https://www.browserstack.com/guide/how-to-implement-mobile-first-design)
-- [Principes de Material Design](https://material.io/design/introduction)
+- [Documentation Angular](mdc:https:/angular.io/docs)
+- [Angular Material](mdc:https:/material.angular.io) (recommandé pour les composants UI)
+- [Guide de Design Mobile First](mdc:https:/www.browserstack.com/guide/how-to-implement-mobile-first-design)
+- [Principes de Material Design](mdc:https:/material.io/design/introduction)
 
 ---
 

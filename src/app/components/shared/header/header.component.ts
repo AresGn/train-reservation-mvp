@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgIf, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
@@ -11,8 +11,7 @@ import { ClickOutsideDirective } from '../../../directives/click-outside.directi
   styleUrls: ['./header.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
-    NgClass,
+    CommonModule,
     RouterLink,
     RouterLinkActive,
     ClickOutsideDirective
@@ -36,7 +35,7 @@ export class HeaderComponent implements OnInit {
     this.checkLoginStatus();
     
     // S'abonner aux changements d'état de connexion
-    this.authService.authStateChanged.subscribe(() => {
+    this.authService.authState$.subscribe(() => {
       this.checkLoginStatus();
     });
 
