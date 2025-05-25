@@ -1,85 +1,83 @@
 @use 'sass:color';
+@use '../../../../assets/styles/variables' as v;
+@use '../../../../assets/styles/mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
-// Palette de couleurs
-$primary-color: #3F51B5;
-$secondary-color: #FF4081;
-$neutral-light: #F5F5F5;
-$white: #FFFFFF;
-$dark-text: #212121;
-$success-color: #4CAF50;
-$error-color: #F44336;
-
-// Mixins pour responsive design
-@mixin tablet {
-  @media (min-width: 600px) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: 960px) {
-    @content;
-  }
-}
-
-// Base de l'approche mobile-first
+// Base de l'approche mobile-first avec le nouveau système responsive
 .login-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  @include m.flex-center;
   min-height: calc(100vh - 120px);
-  padding: 20px;
-  background-color: $neutral-light;
-  font-family: 'Roboto', sans-serif;
 
-  @include tablet {
-    padding: 30px;
-  }
+  // Responsive padding
+  @include m.responsive-spacing(padding,
+    v.$spacing-medium,     // Mobile
+    v.$spacing-large,     // Tablet
+    v.$spacing-xl         // Desktop
+  );
+
+  background: linear-gradient(135deg,
+    rgba(v.$primary-color, 0.05) 0%,
+    rgba(v.$secondary-color, 0.03) 100%
+  ), v.$neutral-color-light;
+
+  font-family: v.$font-family-primary;
 }
 
-.login-card {
+.mvp-card {
+  @include m.card;
   width: 100%;
-  max-width: 400px;
-  background-color: $white;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  padding: 24px;
+  text-align: center;
+  @include m.box-shadow('large');
+  border-radius: v.$border-radius-large;
 
-  @include tablet {
-    padding: 40px;
-    max-width: 450px;
+  // Responsive sizing and padding
+  max-width: 500px;
+  @include m.responsive-spacing(padding,
+    v.$spacing-xl,        // Mobile: 32px
+    v.$spacing-xxl,       // Tablet: 48px
+    calc(#{v.$spacing-xxl} + #{v.$spacing-large}) // Desktop: 72px
+  );
+
+  @include m.md {
+    max-width: 600px;
   }
 
-  @include desktop {
-    padding: 48px;
-    max-width: 500px;
+  @include m.lg {
+    max-width: 700px;
   }
 }
 
-.title {
-  font-size: 22px;
-  font-weight: 500;
-  color: $primary-color;
-  margin: 0 0 12px 0;
-  text-align: center;
+// 🎭 Styles pour l'en-tête de bienvenue
+.welcome-header {
+  @include m.responsive-spacing(margin-bottom, v.$spacing-xl, v.$spacing-xxl);
 
-  @include tablet {
-    font-size: 26px;
+  .app-title {
+    @include m.responsive-font-size(v.$font-size-xl, v.$font-size-xxl, 2.5rem);
+    font-weight: 700;
+    color: v.$primary-color;
+    margin: 0 0 v.$spacing-small 0;
   }
+
+  .app-subtitle {
+    @include m.responsive-font-size(v.$font-size-base, v.$font-size-large);
+    color: rgba(v.$neutral-color-dark, 0.7);
+    margin: 0;
+  }
+}
+
+// Legacy styles (kept for compatibility but using new variables)
+.title {
+  @include m.responsive-font-size(22px, 26px, 28px);
+  font-weight: 500;
+  color: v.$primary-color;
+  margin: 0 0 v.$spacing-small 0;
+  text-align: center;
 }
 
 .subtitle {
-  font-size: 15px;
-  color: rgba($dark-text, 0.75);
-  margin: 0 0 28px 0;
+  @include m.responsive-font-size(15px, 17px, 18px);
+  color: rgba(v.$neutral-color-dark, 0.75);
+  margin: 0 0 v.$spacing-large 0;
   text-align: center;
-
-  @include tablet {
-    font-size: 17px;
-  }
 }
 
 .login-form {
@@ -87,15 +85,19 @@ $error-color: #F44336;
 }
 
 .form-group {
-  margin-bottom: 22px;
+  margin-bottom: v.$spacing-large;
 }
 
 label {
   display: block;
-  font-size: 14px;
+  font-size: v.$font-size-small;
   font-weight: 500;
-  margin-bottom: 8px;
-  color: $dark-text;
+  margin-bottom: v.$spacing-small;
+  color: v.$neutral-color-dark;
+
+  @include m.md {
+    font-size: v.$font-size-base;
+  }
 }
 
 .input-container {
@@ -106,28 +108,28 @@ label {
 input[type="email"],
 input[type="password"],
 input[type="text"] {
-  width: 100%;
-  padding: 14px 18px;
-  font-size: 16px;
-  border: 1px solid rgba($dark-text, 0.25);
-  border-radius: 6px;
-  background-color: $neutral-light;
-  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+  @include m.form-field;
+  background-color: v.$neutral-color-light;
+
+  // Enhanced mobile-friendly sizing
+  @include m.sm-only {
+    min-height: v.$touch-target-min-size;
+    font-size: 16px; // Prevent zoom on iOS
+  }
 
   &:focus {
-    outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
-    background-color: $white;
+    background-color: v.$white-color;
   }
 
   &.is-invalid {
-    border-color: $error-color;
-    box-shadow: 0 0 0 3px rgba($error-color, 0.2);
+    border-color: v.$error-color;
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(v.$error-color, 0.2);
+    }
   }
 
   &::placeholder {
-    color: rgba($dark-text, 0.5);
+    color: rgba(v.$neutral-color-dark, 0.5);
     font-style: italic;
   }
 }
@@ -136,11 +138,11 @@ input[type="text"] {
   display: flex;
   align-items: center;
   position: relative;
-  
+
   input {
     flex: 1;
   }
-  
+
   .toggle-password {
     position: absolute;
     right: 1px;
@@ -149,17 +151,17 @@ input[type="text"] {
     width: 48px;
     background: transparent;
     border: none;
-    border-left: 1px solid rgba($dark-text, 0.1);
+    border-left: 1px solid rgba(v.$neutral-color-dark, 0.1);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba($dark-text, 0.6);
+    color: rgba(v.$neutral-color-dark, 0.6);
     border-radius: 0 6px 6px 0;
 
     &:hover {
-      color: $primary-color;
-      background-color: rgba($primary-color, 0.05);
+      color: v.$primary-color;
+      background-color: rgba(v.$primary-color, 0.05);
     }
 
     span {
@@ -169,23 +171,23 @@ input[type="text"] {
 }
 
 .invalid-feedback {
-  color: $error-color;
+  color: v.$error-color;
   font-size: 13px;
   margin-top: 6px;
   display: block;
 }
 
 .error-message {
-  background-color: rgba($error-color, 0.08);
-  border: 1px solid rgba($error-color, 0.3);
-  border-left: 4px solid $error-color;
+  background-color: rgba(v.$error-color, 0.08);
+  border: 1px solid rgba(v.$error-color, 0.3);
+  border-left: 4px solid v.$error-color;
   padding: 14px 16px;
   margin-bottom: 24px;
   border-radius: 6px;
-  
+
   p {
     margin: 0;
-    color: color.adjust($error-color, $lightness: -10%);
+    color: #D32F2F;
     font-size: 0.875em;
     font-weight: 500;
   }
@@ -195,13 +197,13 @@ input[type="text"] {
   display: flex;
   align-items: center;
   margin-bottom: 28px;
-  
+
   .checkbox-container {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
     position: relative;
-    
+
     input[type="checkbox"] {
       opacity: 0;
       width: 20px;
@@ -210,22 +212,22 @@ input[type="text"] {
       cursor: pointer;
 
       &:checked + .checkbox-custom {
-        background-color: $primary-color;
-        border-color: $primary-color;
+        background-color: v.$primary-color;
+        border-color: v.$primary-color;
         &::after {
           opacity: 1;
         }
       }
 
       &:focus + .checkbox-custom {
-        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+        box-shadow: 0 0 0 2px rgba(v.$primary-color, 0.2);
       }
     }
-    
+
     .checkbox-custom {
       width: 20px;
       height: 20px;
-      border: 2px solid rgba($dark-text, 0.4);
+      border: 2px solid rgba(v.$dark-text, 0.4);
       border-radius: 4px;
       margin-right: 10px;
       display: inline-block;
@@ -239,17 +241,17 @@ input[type="text"] {
         top: 1px;
         width: 6px;
         height: 12px;
-        border: solid $white;
+        border: solid v.$white;
         border-width: 0 2px 2px 0;
         transform: rotate(45deg);
         opacity: 0;
         transition: opacity 0.2s;
       }
     }
-    
+
     .checkbox-label {
       font-size: 15px;
-      color: $dark-text;
+      color: v.$dark-text;
       user-select: none;
     }
   }
@@ -258,8 +260,8 @@ input[type="text"] {
 .submit-button {
   width: 100%;
   padding: 15px;
-  background-color: $primary-color;
-  color: $white;
+  background-color: v.$primary-color;
+  color: v.$white;
   border: none;
   border-radius: 6px;
   font-size: 17px;
@@ -271,7 +273,7 @@ input[type="text"] {
   letter-spacing: 0.5px;
 
   &:hover:not(:disabled) {
-    background-color: color.adjust($primary-color, $lightness: -8%);
+    background-color: #303F9F;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
@@ -280,19 +282,19 @@ input[type="text"] {
     transform: translateY(0px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-  
+
   &:disabled {
-    background-color: rgba($primary-color, 0.6);
+    background-color: rgba(v.$primary-color, 0.6);
     cursor: not-allowed;
   }
-  
+
   .loading-spinner {
     display: inline-block;
     width: 20px;
     height: 20px;
-    border: 2px solid rgba($white, 0.3);
+    border: 2px solid rgba(v.$white, 0.3);
     border-radius: 50%;
-    border-top-color: $white;
+    border-top-color: v.$white;
     animation: spin 1s ease-in-out infinite;
   }
 }
@@ -306,41 +308,185 @@ input[type="text"] {
 .register-link {
   margin-top: 28px;
   text-align: center;
-  
+
   p {
-    color: $dark-text;
+    color: v.$dark-text;
     font-size: 15px;
-    
+
     a {
-      color: $primary-color;
+      color: v.$primary-color;
       text-decoration: none;
       font-weight: 500;
-      
+
       &:hover {
         text-decoration: underline;
-        color: color.adjust($primary-color, $lightness: -10%);
+        color: #303F9F;
       }
     }
   }
 }
 
-// Styles pour les placeholders et messages d'erreur
+// 🎭 Styles pour la section MVP avec le nouveau système responsive
+.mvp-test-section {
+  @include m.responsive-spacing(padding, v.$spacing-large, v.$spacing-xl, v.$spacing-xxl);
+  background: linear-gradient(135deg,
+    rgba(v.$primary-color, 0.08),
+    rgba(v.$secondary-color, 0.04)
+  );
+  border-radius: v.$border-radius-large;
+  border: 3px dashed rgba(v.$primary-color, 0.2);
+  @include m.responsive-spacing(margin-bottom, v.$spacing-large, v.$spacing-xl);
+
+  h2 {
+    color: v.$primary-color;
+    @include m.responsive-font-size(v.$font-size-xl, v.$font-size-xxl, 1.75rem);
+    font-weight: 600;
+    margin: 0 0 v.$spacing-medium 0;
+  }
+
+  .mvp-description {
+    color: v.$neutral-color-dark;
+    @include m.responsive-font-size(v.$font-size-base, v.$font-size-large);
+    margin: 0 0 v.$spacing-xl 0;
+    line-height: 1.5;
+  }
+
+  .mvp-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-medium;
+    @include m.responsive-spacing(margin-bottom, v.$spacing-large, v.$spacing-xl);
+
+    @include m.md {
+      flex-direction: row;
+      justify-content: center;
+      gap: v.$spacing-large;
+    }
+  }
+
+  .mvp-button {
+    @include m.button-base('large');
+    border-radius: v.$border-radius-medium;
+    @include m.responsive-font-size(v.$font-size-base, v.$font-size-large);
+    font-weight: 600;
+    @include m.smooth-transition(all, v.$transition-base);
+
+    // Enhanced mobile touch targets
+    min-height: 80px;
+    @include m.flex-center;
+    text-align: center;
+    line-height: 1.3;
+
+    @include m.sm-only {
+      min-height: v.$touch-target-min-size;
+      padding: v.$spacing-medium v.$spacing-large;
+    }
+
+    &.search-button {
+      background: linear-gradient(135deg, v.$success-color, #45a049);
+      color: v.$white-color;
+      @include m.box-shadow('medium');
+
+      &:hover:not(:disabled) {
+        transform: translateY(-3px);
+        @include m.box-shadow('large');
+        background: linear-gradient(135deg, #45a049, #3d8b40);
+      }
+    }
+
+    &.payment-button {
+      background: linear-gradient(135deg, v.$secondary-color, #E91E63);
+      color: v.$white-color;
+      @include m.box-shadow('medium');
+
+      &:hover:not(:disabled) {
+        transform: translateY(-3px);
+        @include m.box-shadow('large');
+        background: linear-gradient(135deg, #F06292, #C2185B);
+      }
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    @include m.md {
+      flex: 1;
+      max-width: 200px;
+      min-height: 100px;
+    }
+  }
+
+  .mvp-note {
+    margin: 0;
+
+    p {
+      margin: 0;
+
+      small {
+        color: rgba(v.$neutral-color-dark, 0.6);
+        font-style: italic;
+        font-size: v.$font-size-small;
+      }
+    }
+  }
+}
+
+// Styles pour les messages d'erreur et validation
 .form-group input.is-invalid + .invalid-feedback {
   display: block;
 }
 
-// Ajustements responsives spécifiques
-@include tablet {
-  .title {
-    font-size: 28px;
-  }
-  .subtitle {
-    font-size: 18px;
+.invalid-feedback {
+  color: v.$error-color;
+  font-size: v.$font-size-small;
+  margin-top: v.$spacing-xs;
+  display: block;
+  font-weight: 500;
+}
+
+.error-message {
+  background-color: rgba(v.$error-color, 0.08);
+  border: 1px solid rgba(v.$error-color, 0.3);
+  border-left: 4px solid v.$error-color;
+  @include m.responsive-spacing(padding, v.$spacing-small v.$spacing-medium);
+  @include m.responsive-spacing(margin-bottom, v.$spacing-large);
+  border-radius: v.$border-radius-small;
+
+  p {
+    margin: 0;
+    color: #D32F2F;
+    font-size: v.$font-size-small;
+    font-weight: 500;
   }
 }
 
-@include desktop {
-  .login-card {
-    max-width: 480px;
+// Lien d'inscription avec styles responsive
+.register-link {
+  @include m.responsive-spacing(margin-top, v.$spacing-large, v.$spacing-xl);
+  text-align: center;
+
+  p {
+    color: v.$neutral-color-dark;
+    @include m.responsive-font-size(v.$font-size-small, v.$font-size-base);
+
+    a {
+      color: v.$primary-color;
+      text-decoration: none;
+      font-weight: 500;
+      @include m.smooth-transition(color, v.$transition-fast);
+
+      &:hover {
+        text-decoration: underline;
+        color: color.adjust(v.$primary-color, $lightness: -10%);
+      }
+
+      // Enhanced touch target for mobile
+      @include m.sm-only {
+        display: inline-block;
+        padding: v.$spacing-xs v.$spacing-small;
+        margin: -#{v.$spacing-xs} -#{v.$spacing-small};
+      }
+    }
   }
 }

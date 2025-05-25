@@ -1,86 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
-  isSubmitting = false;
-  formSubmitted = false;
-  loginError = false;
-  passwordVisible = false;
+export class LoginComponent {
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
-  ngOnInit(): void {
-    this.createForm();
+  // 🎭 Méthodes MVP pour navigation rapide
+  navigateToSearch(): void {
+    console.log('🎭 MVP: Navigation rapide vers la recherche de trains');
+    this.router.navigate(['/search']);
   }
 
-  createForm(): void {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
-      rememberMe: [false]
-    });
-  }
-
-  get f() {
-    return this.loginForm.controls;
-  }
-
-  togglePasswordVisibility(): void {
-    this.passwordVisible = !this.passwordVisible;
-  }
-
-  onSubmit(): void {
-    this.formSubmitted = true;
-    this.loginError = false;
-
-    const { email, password } = this.loginForm.value;
-
-    // MVP: Auto-login for specific credentials
-    if (email === 'test@example.com' && password === 'Password123!') {
-      this.authService.mockLogin(email).subscribe(() => {
-        this.isSubmitting = false;
-        this.router.navigate(['/search']);
-      });
-      return;
-    }
-
-    // Si le formulaire n'est pas valide, sortir de la fonction
-    if (this.loginForm.invalid) {
-      return;
-    }
-
-    this.isSubmitting = true;
-
-    this.authService.login(email, password).subscribe({
-      next: (success) => {
-        this.isSubmitting = false;
-        if (success) {
-          // Redirection intelligente : vers la page de recherche après connexion réussie
-          this.router.navigate(['/search']);
-        } else {
-          this.loginError = true;
-        }
-      },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.loginError = true;
-        console.error('Erreur lors de la connexion:', error);
-      }
-    });
+  navigateToPayment(): void {
+    console.log('🎭 MVP: Navigation rapide vers le test de paiement');
+    this.router.navigate(['/payment']);
   }
 }

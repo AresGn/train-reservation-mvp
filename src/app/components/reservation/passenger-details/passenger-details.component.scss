@@ -1,196 +1,262 @@
-@import '../../../../assets/styles/variables';
-@import '../../../../assets/styles/mixins';
-@import '../../../../assets/styles/buttons';
+@use '@angular/material' as mat;
+@use 'sass:color';
+@use '../../../../assets/styles/variables' as v;
+@use '../../../../assets/styles/mixins' as m;
+@use '../../../../assets/styles/buttons' as btn;
 
 .passenger-details-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 1rem 2rem;
-  background-color: var(--neutral-color-light);
-  border-radius: var(--border-radius-large);
-  box-shadow: var(--shadow-medium);
+  padding: v.$spacing-medium;
+  max-width: 100%;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 
-  @include mobile-first(tablette) {
-    padding: 2rem;
+  @include m.tablet-v2 {
+    padding: v.$spacing-large;
+    max-width: 800px;
+  }
+
+  @include m.desktop-v2 {
+    max-width: 900px;
+    padding: v.$spacing-xl;
   }
 
   .progress-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: v.$spacing-xl;
+
     h2 {
-      color: var(--primary-color);
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-medium);
+      color: v.$primary-color;
+      font-size: v.$font-size-xl;
+      font-weight: 500;
+      margin: 0;
+
+      @include m.mobile-v2 {
+        font-size: v.$font-size-large;
+      }
     }
   }
 
   .loading-indicator,
   .error-message {
     text-align: center;
-    padding: 2rem;
-    font-size: var(--font-size-large);
+    padding: v.$spacing-large;
+    font-size: v.$font-size-large;
+    margin-bottom: v.$spacing-medium;
   }
 
   .error-message p {
-    color: var(--error-color);
-    background-color: rgba(var(--error-color-rgb), 0.1);
-    padding: 1rem;
-    border-radius: var(--border-radius-medium);
+    color: v.$error-color;
+    background-color: rgba(v.$error-color, 0.1);
+    padding: v.$spacing-medium;
+    border-radius: v.$border-radius-medium;
   }
 
   .content-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: v.$spacing-xl;
+    flex: 1;
   }
 
   .reservation-summary {
-    background-color: var(--white-color);
-    padding: 1.5rem;
-    border-radius: var(--border-radius-medium);
-    border: 1px solid var(--neutral-color-light-gray);
+    background-color: v.$white-color;
+    padding: v.$spacing-large;
+    border-radius: v.$border-radius-medium;
+    border: 1px solid rgba(v.$neutral-color-dark, 0.1);
+    @include m.box-shadow('small');
+
     h3 {
-      color: var(--primary-color);
-      margin-top: 0;
-      margin-bottom: 1rem;
-      font-size: var(--font-size-large);
+      color: v.$primary-color;
+      margin: 0 0 v.$spacing-medium 0;
+      font-size: v.$font-size-large;
+      font-weight: 500;
     }
+
     p {
-      margin-bottom: 0.5rem;
-      font-size: var(--font-size-normal);
-      color: var(--text-color-dark);
+      margin-bottom: v.$spacing-small;
+      font-size: v.$font-size-base;
+      color: v.$neutral-color-dark;
+      line-height: 1.5;
+
       strong {
-        color: var(--primary-color-dark);
+        color: v.$primary-color;
+        font-weight: 500;
       }
     }
   }
 
-  .passenger-card {
-    background-color: var(--white-color);
-    padding: 1.5rem;
-    border-radius: var(--border-radius-medium);
-    margin-bottom: 1.5rem;
-    border: 1px solid var(--neutral-color-light-gray);
-    box-shadow: var(--shadow-small);
+  // Styles pour les cartes de passagers
+  .passenger-form-card {
+    background-color: v.$white-color;
+    padding: v.$spacing-large;
+    border-radius: v.$border-radius-medium;
+    border: 1px solid rgba(v.$neutral-color-dark, 0.1);
+    @include m.box-shadow('small');
+    margin-bottom: v.$spacing-large;
 
-    h4 {
-      color: var(--secondary-color);
-      margin-top: 0;
-      margin-bottom: 1.5rem;
-      font-size: var(--font-size-large);
-      border-bottom: 1px solid var(--neutral-color-light-gray);
-      padding-bottom: 0.5rem;
+    h3 {
+      color: v.$secondary-color;
+      margin: 0 0 v.$spacing-large 0;
+      font-size: v.$font-size-large;
+      font-weight: 500;
+      padding-bottom: v.$spacing-small;
+      border-bottom: 2px solid rgba(v.$secondary-color, 0.2);
     }
   }
 
-  .form-field {
-    margin-bottom: 1.25rem;
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: var(--font-weight-medium);
-      color: var(--text-color-medium);
-      .required {
-        color: var(--error-color);
-        margin-left: 0.25rem;
-      }
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="tel"],
-    select {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--neutral-color-gray);
-      border-radius: var(--border-radius-small);
-      font-size: var(--font-size-normal);
-      box-sizing: border-box;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-      &:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
-      }
-
-      // Style pour les inputs invalides
-      &.ng-invalid.ng-touched {
-        border-color: var(--error-color);
-        box-shadow: 0 0 0 2px rgba(var(--error-color-rgb), 0.2);
-      }
-    }
-    
-    select {
-      appearance: none;
-      background-image: var(--select-arrow-dark);
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      background-size: 12px;
-    }
-
-    .validation-error {
-      color: var(--error-color);
-      font-size: var(--font-size-small);
-      margin-top: 0.25rem;
-    }
-  }
-  
-  .form-grid {
+  // Grille responsive pour les formulaires
+  .form-grid-responsive {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: v.$spacing-medium;
 
-    @include mobile-first(mobile-large) {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    @include m.tablet-v2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include m.desktop-v2 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .form-group-full-width {
+      @include m.tablet-v2 {
+        grid-column: 1 / -1;
+      }
     }
   }
 
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Styles pour l'affichage des prix
   .price-display {
-    margin-top: 1rem;
-    label {
-        margin-bottom: 0.25rem;
-    }
-    span {
-      font-size: var(--font-size-large);
-      font-weight: var(--font-weight-bold);
-      color: var(--accent-color-success); // Vert pour le prix
+    margin-top: v.$spacing-medium;
+    padding: v.$spacing-small v.$spacing-medium;
+    background-color: rgba(v.$primary-color, 0.05);
+    border-radius: v.$border-radius-small;
+    border-left: 4px solid v.$primary-color;
+
+    p {
+      margin: 0;
+      color: v.$primary-color;
+      font-weight: 500;
+      font-size: v.$font-size-base;
+      text-align: right;
     }
   }
 
-  .total-price-summary {
-    text-align: right;
-    margin-top: 1.5rem;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background-color: var(--primary-color-lightest);
-    border-radius: var(--border-radius-medium);
-    h4 {
-      color: var(--primary-color-dark);
-      font-size: var(--font-size-xl);
+  .total-price {
+    margin: v.$spacing-xl 0;
+    padding: v.$spacing-large;
+    background: linear-gradient(135deg, rgba(v.$primary-color, 0.1), rgba(v.$secondary-color, 0.05));
+    border-radius: v.$border-radius-medium;
+    border: 2px solid v.$primary-color;
+    text-align: center;
+    @include m.box-shadow('medium');
+
+    h3 {
       margin: 0;
+      color: v.$primary-color;
+      font-size: v.$font-size-xl;
+      font-weight: 600;
+
+      @include m.mobile-v2 {
+        font-size: v.$font-size-large;
+      }
     }
   }
 
   .form-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2rem;
+    flex-direction: column;
+    gap: v.$spacing-medium;
+    margin-top: v.$spacing-xl;
+    padding-top: v.$spacing-large;
+    border-top: 1px solid rgba(v.$neutral-color-dark, 0.1);
+
+    @include m.tablet-v2 {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: v.$spacing-large;
+
+      button {
+        min-width: 200px;
+        flex: 0 0 auto;
+      }
+    }
 
     button {
-      padding: 0.8rem 1.5rem;
-      font-size: var(--font-size-medium);
+      width: 100%;
+      padding: v.$spacing-medium v.$spacing-large;
+      font-size: v.$font-size-base;
+      font-weight: 500;
+      border-radius: v.$border-radius-small;
+      @include m.smooth-transition();
 
-       @include mobile-first(mobile-medium) {
-         padding: 0.9rem 2rem; // Plus gros boutons sur écrans plus larges
+      &:not(:disabled):hover {
+        transform: translateY(-2px);
+        @include m.box-shadow('medium');
+      }
+
+      mat-icon {
+        margin-right: v.$spacing-small;
       }
     }
   }
 }
 
-// Styles pour le ng-invalid.ng-touched directement sur le composant si nécessaire
-:host ::ng-deep .ng-invalid.ng-touched {
-    // border-left: 5px solid var(--error-color); // Ou autre indicateur visuel
+// Styles globaux pour Material Design
+::ng-deep {
+  // Amélioration des champs de formulaire Material
+  .mat-mdc-form-field {
+    width: 100%;
+
+    .mat-mdc-text-field-wrapper {
+      border-radius: v.$border-radius-small;
+    }
+
+    &.mat-form-field-invalid {
+      .mat-mdc-form-field-error {
+        color: v.$error-color;
+        font-size: v.$font-size-small;
+      }
+    }
+  }
+
+  // Styles pour les boutons Material
+  .mat-mdc-raised-button {
+    &.mat-primary {
+      background-color: v.$primary-color;
+      color: v.$white-color;
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust(v.$primary-color, $lightness: -10%);
+      }
+    }
+  }
+
+  .mat-mdc-button {
+    &:hover:not(:disabled) {
+      background-color: rgba(v.$neutral-color-dark, 0.05);
+    }
+  }
+
+  // Amélioration des sélecteurs
+  .mat-mdc-select {
+    .mat-mdc-select-trigger {
+      border-radius: v.$border-radius-small;
+    }
+  }
+
+  // Styles pour les icônes Material
+  .mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
 }

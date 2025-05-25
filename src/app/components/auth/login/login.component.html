@@ -1,76 +1,31 @@
 <div class="login-container">
-  <div class="login-card">
-    <h1 class="title">Connexion</h1>
-    <p class="subtitle">Entrez vos identifiants pour accéder à votre compte</p>
+  <div class="mvp-card">
+    <!-- En-tête de bienvenue -->
+    <div class="welcome-header">
+      <h1 class="app-title">🚂 Réservation Train Gabon</h1>
+      <p class="app-subtitle">Système de réservation de billets de train</p>
+    </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <!-- Message d'erreur global -->
-      <div *ngIf="loginError" class="error-message">
-        <p>Email ou mot de passe incorrect. Veuillez réessayer.</p>
+    <!-- Section MVP pour tests rapides -->
+    <div class="mvp-test-section">
+      <h2>🎭 Mode MVP - Tests rapides</h2>
+      <p class="mvp-description">Testez directement les fonctionnalités sans créer de compte :</p>
+
+      <div class="mvp-buttons">
+        <button type="button" class="mvp-button search-button" (click)="navigateToSearch()">
+          🔍 Rechercher<br>un train
+        </button>
+        <button type="button" class="mvp-button payment-button" (click)="navigateToPayment()">
+          💳 Tester le<br>paiement
+        </button>
       </div>
 
-      <!-- Champ Email -->
-      <div class="form-group">
-        <label for="email">Email</label>
-        <div class="input-container">
-          <input 
-            type="email" 
-            id="email" 
-            formControlName="email" 
-            [ngClass]="{'is-invalid': formSubmitted && f['email'].errors}"
-            placeholder="exemple@email.com"
-          >
-        </div>
-        <div *ngIf="formSubmitted && f['email'].errors" class="invalid-feedback">
-          <div *ngIf="f['email'].errors['required']">L'email est requis</div>
-          <div *ngIf="f['email'].errors['email']">Veuillez entrer un email valide</div>
-        </div>
+      <div class="mvp-note">
+        <p><small>* Ces boutons créent automatiquement des données de test pour la démonstration</small></p>
       </div>
+    </div>
 
-      <!-- Champ Mot de passe -->
-      <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <div class="input-container password-container">
-          <input 
-            [type]="passwordVisible ? 'text' : 'password'" 
-            id="password" 
-            formControlName="password" 
-            [ngClass]="{'is-invalid': formSubmitted && f['password'].errors}"
-          >
-          <button 
-            type="button" 
-            class="toggle-password" 
-            (click)="togglePasswordVisibility()"
-          >
-            <span *ngIf="!passwordVisible">👁️</span>
-            <span *ngIf="passwordVisible">👁️‍🗨️</span>
-          </button>
-        </div>
-        <div *ngIf="formSubmitted && f['password'].errors" class="invalid-feedback">
-          <div *ngIf="f['password'].errors['required']">Le mot de passe est requis</div>
-        </div>
-      </div>
-
-      <!-- Option Se souvenir de moi -->
-      <div class="form-group remember-me">
-        <label class="checkbox-container">
-          <input type="checkbox" formControlName="rememberMe">
-          <span class="checkbox-custom"></span>
-          <span class="checkbox-label">Se souvenir de moi</span>
-        </label>
-      </div>
-
-      <!-- Bouton de connexion -->
-      <button 
-        type="submit" 
-        class="submit-button" 
-        [disabled]="isSubmitting"
-      >
-        <span *ngIf="!isSubmitting">Se connecter</span>
-        <span *ngIf="isSubmitting" class="loading-spinner"></span>
-      </button>
-    </form>
-
+    <!-- Lien d'inscription optionnel -->
     <div class="register-link">
       <p>Vous n'avez pas de compte ? <a routerLink="/register">Inscrivez-vous</a></p>
     </div>

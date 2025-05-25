@@ -1,19 +1,12 @@
 @use '@angular/material' as mat;
 @use 'sass:color';
+@use '../../../../assets/styles/variables' as v;
+@use '../../../../assets/styles/mixins' as m;
 
-// Variables de couleurs
-$primary: #3F51B5;  // Bleu indigo
-$accent: #FF4081;   // Rose
-$white: #FFFFFF;
-$gray-light: #F5F5F5;
-$gray-dark: #212121;
-$dark-blue: #2c3e50;
-$light-blue: #3498db;
-
-// Styles pour le header
+// Styles pour le header avec le nouveau système responsive
 .header {
-  background-color: $primary;
-  color: $white;
+  background-color: v.$primary-color;
+  color: v.$white-color;
   position: fixed;
   top: 0;
   left: 0;
@@ -21,271 +14,190 @@ $light-blue: #3498db;
   z-index: 1000;
   height: auto;
   padding: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  
+  @include m.box-shadow('medium');
+
   .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 16px;
+    @include m.flex-between;
+    @include m.container;
+
+    // Responsive height
     height: 64px;
+    @include m.md {
+      height: 72px;
+    }
+
+    // Responsive padding
+    @include m.responsive-spacing(padding,
+      0 v.$spacing-medium,  // Mobile
+      0 v.$spacing-large,   // Tablet
+      0 v.$spacing-xl       // Desktop
+    );
   }
 }
 
-// Logo et nom de l'application
+// Logo et nom de l'application avec responsive design
 .header-logo {
-  display: flex;
-  align-items: center;
-  
+  @include m.flex-center;
+
   a {
-    display: flex;
-    align-items: center;
+    @include m.flex-center;
     text-decoration: none;
-    color: $white;
-  }
-  
-  .logo-container {
-    display: flex;
-    align-items: center;
-    
-    .train-icon {
-      height: 28px;
-      width: 28px;
-      margin-right: 8px;
-      color: $white;
+    color: v.$white-color;
+    @include m.smooth-transition(color, v.$transition-fast);
+
+    // Enhanced touch target for mobile
+    @include m.sm-only {
+      padding: v.$spacing-xs;
+      margin: -#{v.$spacing-xs};
     }
-    
+
+    &:hover {
+      color: rgba(v.$white-color, 0.9);
+    }
+  }
+
+  .logo-container {
+    @include m.flex-center;
+    gap: v.$spacing-small;
+
+    .train-icon {
+      @include m.responsive-font-size(28px, 32px, 36px);
+      width: 1em;
+      height: 1em;
+      color: v.$white-color;
+    }
+
     .app-name {
-      font-size: 1.25rem;
+      @include m.responsive-font-size(v.$font-size-large, v.$font-size-xl, v.$font-size-xxl);
       font-weight: 500;
-      color: $white;
+      color: v.$white-color;
+
+      // Hide on very small screens to save space
+      @include m.xs-only {
+        display: none;
+      }
     }
   }
 }
 
-// Bouton hamburger
+// Bouton hamburger avec amélioration responsive
 .menu-toggle {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 30px;
-  height: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: v.$spacing-small;
   z-index: 10;
-  
+  @include m.smooth-transition(all, v.$transition-fast);
+
+  // Enhanced touch target
+  width: v.$touch-target-min-size;
+  height: v.$touch-target-min-size;
+  @include m.flex-center;
+  border-radius: v.$border-radius-small;
+
+  .hamburger-inner {
+    width: 24px;
+    height: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   .bar {
     width: 100%;
     height: 3px;
-    background-color: $white;
-    border-radius: 3px;
-    transition: all 0.3s ease;
+    background-color: v.$white-color;
+    border-radius: v.$border-radius-xs;
+    @include m.smooth-transition(all, v.$transition-base);
   }
-  
-  &:hover .bar {
-    background-color: color.adjust($white, $lightness: -10%);
+
+  &:hover {
+    background-color: rgba(v.$white-color, 0.1);
+
+    .bar {
+      background-color: rgba(v.$white-color, 0.9);
+    }
+  }
+
+  // Hide on desktop
+  @include m.md {
+    display: none;
   }
 }
 
-// Menu de navigation
+// Menu de navigation avec amélioration responsive
 .nav-menu {
   position: fixed;
   top: 64px;
   left: 0;
   width: 100%;
   height: calc(100vh - 64px);
-  background-color: $primary;
-  padding: 20px;
+  background-color: v.$primary-color;
+  @include m.responsive-spacing(padding, v.$spacing-large);
   transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
+  @include m.smooth-transition(transform, v.$transition-base);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   z-index: 999;
-  
+
+  // Enhanced mobile scrolling
+  -webkit-overflow-scrolling: touch;
+
+  @include m.md {
+    top: 72px;
+    height: calc(100vh - 72px);
+  }
+
   &.active {
     transform: translateX(0);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    @include m.box-shadow('large');
   }
-  
+
   .nav-list {
     list-style: none;
     padding: 0;
-    margin: 0 0 16px 0;
-    
+    margin: 0 0 v.$spacing-medium 0;
+
     .nav-item {
-      margin-bottom: 16px;
-      
+      @include m.responsive-spacing(margin-bottom, v.$spacing-medium);
+
       a {
-        color: $white;
+        color: v.$white-color;
         text-decoration: none;
-        font-size: 1.1rem;
-        transition: color 0.2s ease;
+        @include m.responsive-font-size(v.$font-size-large, v.$font-size-xl);
+        @include m.smooth-transition(all, v.$transition-fast);
         display: block;
-        padding: 8px 0;
-        
-        &:hover, &.active {
-          color: color.adjust($white, $lightness: -15%);
-          background-color: rgba(255, 255, 255, 0.1);
-          padding-left: 10px;
-          border-radius: 4px;
+        @include m.responsive-spacing(padding, v.$spacing-small 0, v.$spacing-medium 0);
+        border-radius: v.$border-radius-small;
+
+        // Enhanced touch targets
+        @include m.sm-only {
+          min-height: v.$touch-target-min-size;
+          @include m.flex-center;
+          justify-content: flex-start;
         }
-        
+
+        &:hover, &.active {
+          color: rgba(v.$white-color, 0.9);
+          background-color: rgba(v.$white-color, 0.1);
+          padding-left: v.$spacing-medium;
+          transform: translateX(v.$spacing-xs);
+        }
+
         &.active {
           font-weight: 600;
+          background-color: rgba(v.$white-color, 0.15);
         }
       }
     }
   }
-}
 
-// Boutons d'authentification
-.auth-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  
-  .btn-login, .btn-register {
-    padding: 8px 16px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-  
-  .btn-login {
-    color: $white;
-    background-color: transparent;
-    border: 1px solid $white;
-    
-    &:hover {
-      background-color: color.adjust($white, $lightness: -10%);
-    }
-  }
-  
-  .btn-register {
-    color: $primary;
-    background-color: $white;
-    
-    &:hover {
-      background-color: color.adjust($white, $lightness: -10%);
-    }
-  }
-  
-  // Menu utilisateur
-  .user-menu-container {
-    position: relative;
-    
-    .user-avatar {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      
-      svg {
-        width: 24px;
-        height: 24px;
-        color: $white;
-      }
-      
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-    }
-    
-    .user-dropdown {
-      position: absolute;
-      right: 0;
-      top: 50px;
-      width: 240px;
-      background-color: $white;
-      border-radius: 4px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-      z-index: 1000;
-      
-      &.active {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
-      
-      .user-info {
-        padding: 16px;
-        background-color: color.adjust($primary, $lightness: 45%);
-        border-bottom: 1px solid color.adjust($primary, $lightness: 40%);
-        
-        .user-name {
-          margin: 0 0 4px;
-          font-weight: 600;
-          color: $gray-dark;
-        }
-        
-        .user-email {
-          margin: 0;
-          font-size: 0.9rem;
-          color: color.adjust($gray-dark, $lightness: 20%);
-        }
-      }
-      
-      .dropdown-menu {
-        list-style: none;
-        padding: 8px 0;
-        margin: 0;
-        
-        li {
-          a {
-            display: block;
-            padding: 8px 16px;
-            color: $gray-dark;
-            text-decoration: none;
-            transition: background-color 0.2s ease;
-            
-            &:hover {
-              background-color: $gray-light;
-            }
-            
-            &.logout-button {
-              color: #e74c3c;
-              cursor: pointer;
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-// Media queries pour les tablettes et desktop
-@media screen and (min-width: 768px) {
-  .header {
-    .container {
-      height: 72px;
-    }
-  }
-  
-  .menu-toggle {
-    display: none;
-  }
-  
-  .nav-menu {
+  // Desktop navigation styles
+  @include m.md {
     position: static;
     transform: none;
     flex-direction: row;
@@ -297,41 +209,221 @@ $light-blue: #3498db;
     width: auto;
     height: auto;
     overflow: visible;
-    
+
     .nav-list {
       display: flex;
-      margin: 0 24px 0 0;
-      
+      margin: 0 v.$spacing-large 0 0;
+
       .nav-item {
-        margin: 0 16px 0 0;
-        
+        margin: 0 v.$spacing-medium 0 0;
+
         a {
-          padding: 8px 12px;
-          
+          padding: v.$spacing-small v.$spacing-medium;
+
           &:hover, &.active {
-            padding-left: 12px;
+            padding-left: v.$spacing-medium;
+            transform: none;
           }
         }
       }
     }
   }
-  
-  .auth-buttons {
+}
+
+// Boutons d'authentification avec responsive design
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  @include m.responsive-spacing(gap, v.$spacing-small, v.$spacing-medium);
+
+  .btn-login, .btn-register {
+    @include m.button-base('medium');
+    border-radius: v.$border-radius-small;
+    text-decoration: none;
+    font-weight: 500;
+    @include m.smooth-transition(all, v.$transition-fast);
+
+    // Enhanced mobile touch targets
+    @include m.sm-only {
+      min-height: v.$touch-target-min-size;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .btn-login {
+    @include m.button-secondary('medium');
+    color: v.$white-color;
+    border-color: v.$white-color;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(v.$white-color, 0.1);
+      color: v.$white-color;
+    }
+  }
+
+  .btn-register {
+    @include m.button-primary('medium');
+    background-color: v.$white-color;
+    color: v.$primary-color;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(v.$white-color, 0.9);
+      transform: translateY(-1px);
+    }
+  }
+
+  // Desktop layout
+  @include m.md {
     flex-direction: row;
     align-items: center;
-    
+
     .btn-login, .btn-register {
-      margin: 0 0 0 12px;
+      width: auto;
+      margin: 0 0 0 v.$spacing-medium;
     }
   }
 }
 
-// Animation pour l'élément actif
+// Menu utilisateur avec responsive design
+.user-menu-container {
+  position: relative;
+
+  .user-avatar {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    @include m.flex-center;
+    overflow: hidden;
+    @include m.smooth-transition(background-color, v.$transition-fast);
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: v.$white-color;
+    }
+
+    &:hover {
+      background-color: rgba(v.$white-color, 0.1);
+    }
+  }
+
+  .user-dropdown {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 240px;
+    background-color: v.$white-color;
+    border-radius: v.$border-radius-small;
+    @include m.box-shadow('large');
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    @include m.smooth-transition(all, v.$transition-base);
+    z-index: 1000;
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .user-info {
+      padding: v.$spacing-medium;
+      background-color: color.adjust(v.$primary-color, $lightness: 45%);
+      border-bottom: 1px solid color.adjust(v.$primary-color, $lightness: 40%);
+
+      .user-name {
+        margin: 0 0 v.$spacing-xs;
+        font-weight: 600;
+        color: v.$neutral-color-dark;
+      }
+
+      .user-email {
+        margin: 0;
+        font-size: v.$font-size-small;
+        color: color.adjust(v.$neutral-color-dark, $lightness: 20%);
+      }
+    }
+
+    .dropdown-menu {
+      list-style: none;
+      padding: v.$spacing-small 0;
+      margin: 0;
+
+      li {
+        a {
+          display: block;
+          padding: v.$spacing-small v.$spacing-medium;
+          color: v.$neutral-color-dark;
+          text-decoration: none;
+          @include m.smooth-transition(background-color, v.$transition-fast);
+
+          &:hover {
+            background-color: v.$neutral-color-light;
+          }
+
+          &.logout-button {
+            color: v.$error-color;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animation pour l'élément actif avec le nouveau système
 @keyframes activeLink {
-  from { background-color: transparent; }
-  to { background-color: rgba(255, 255, 255, 0.2); }
+  from {
+    background-color: transparent;
+    transform: translateX(0);
+  }
+  to {
+    background-color: rgba(v.$white-color, 0.2);
+    transform: translateX(v.$spacing-xs);
+  }
 }
 
 .active {
-  animation: activeLink 0.3s ease forwards;
+  animation: activeLink v.$transition-base ease forwards;
+}
+
+// Animation pour le menu mobile
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.nav-menu {
+  &.active {
+    animation: slideIn v.$transition-base ease forwards;
+  }
+
+  &.closing {
+    animation: slideOut v.$transition-base ease forwards;
+  }
 }

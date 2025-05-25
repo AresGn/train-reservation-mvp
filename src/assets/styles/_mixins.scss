@@ -1,38 +1,488 @@
+@use 'sass:color';
 @use 'variables' as v; // Import variables to use breakpoints
 
-// Mixin pour tablette
+// ===== RESPONSIVE BREAKPOINT MIXINS =====
+
+// Mobile-first approach (min-width)
+@mixin xs {
+  @media (min-width: v.$breakpoint-xs) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @media (min-width: v.$breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media (min-width: v.$breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (min-width: v.$breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (min-width: v.$breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin xxl {
+  @media (min-width: v.$breakpoint-xxl) {
+    @content;
+  }
+}
+
+// Max-width approach (for mobile-only styles)
+@mixin xs-only {
+  @media (max-width: (v.$breakpoint-sm - 1px)) {
+    @content;
+  }
+}
+
+@mixin sm-only {
+  @media (max-width: (v.$breakpoint-md - 1px)) {
+    @content;
+  }
+}
+
+@mixin md-only {
+  @media (min-width: v.$breakpoint-md) and (max-width: (v.$breakpoint-lg - 1px)) {
+    @content;
+  }
+}
+
+@mixin lg-only {
+  @media (min-width: v.$breakpoint-lg) and (max-width: (v.$breakpoint-xl - 1px)) {
+    @content;
+  }
+}
+
+@mixin xl-only {
+  @media (min-width: v.$breakpoint-xl) and (max-width: (v.$breakpoint-xxl - 1px)) {
+    @content;
+  }
+}
+
+// Legacy mixins for backward compatibility
 @mixin tablet {
   @media (min-width: v.$breakpoint-tablet) {
     @content;
   }
 }
 
-// Mixin pour desktop
 @mixin desktop {
   @media (min-width: v.$breakpoint-desktop) {
     @content;
   }
 }
 
-// Mixin générique pour mobile-first (peut être adapté)
-// Exemple : cibler les écrans jusqu'à la tablette (non inclus)
 @mixin mobile-only {
   @media (max-width: (v.$breakpoint-tablet - 1px)) {
     @content;
   }
 }
 
-// Si mobile-first est utilisé comme un alias pour tablet ou une condition spécifique
+// Legacy v2 mixins
+@mixin mobile-v2 {
+  @media (max-width: v.$mobile) {
+    @content;
+  }
+}
+
+@mixin tablet-v2 {
+  @media (min-width: #{v.$mobile + 1px}) and (max-width: v.$tablet) {
+    @content;
+  }
+}
+
+@mixin desktop-v2 {
+  @media (min-width: #{v.$tablet + 1px}) {
+    @content;
+  }
+}
+
+// Generic mobile-first mixin with parameter
 @mixin mobile-first($breakpoint-name) {
-  @if $breakpoint-name == tablette {
-    @include tablet {
-      @content;
-    }
-  } @else if $breakpoint-name == desktop {
-    @include desktop {
-      @content;
-    }
+  @if $breakpoint-name == xs {
+    @include xs { @content; }
+  } @else if $breakpoint-name == sm {
+    @include sm { @content; }
+  } @else if $breakpoint-name == md or $breakpoint-name == tablette {
+    @include md { @content; }
+  } @else if $breakpoint-name == lg or $breakpoint-name == desktop {
+    @include lg { @content; }
+  } @else if $breakpoint-name == xl {
+    @include xl { @content; }
+  } @else if $breakpoint-name == xxl {
+    @include xxl { @content; }
   } @else {
     @warn "Breakpoint #{$breakpoint-name} non reconnu pour le mixin mobile-first.";
   }
-} 
+}
+
+// ===== UTILITY MIXINS =====
+
+// Transitions
+@mixin smooth-transition($property: all, $duration: v.$transition-base) {
+  transition: $property $duration;
+}
+
+@mixin transition($properties...) {
+  transition: $properties;
+}
+
+// Shadows
+@mixin box-shadow($level: 'medium') {
+  @if $level == 'xs' {
+    box-shadow: v.$shadow-xs;
+  } @else if $level == 'small' {
+    box-shadow: v.$shadow-small;
+  } @else if $level == 'medium' {
+    box-shadow: v.$shadow-medium;
+  } @else if $level == 'large' {
+    box-shadow: v.$shadow-large;
+  } @else if $level == 'xl' {
+    box-shadow: v.$shadow-xl;
+  } @else {
+    box-shadow: $level; // Allow custom shadow values
+  }
+}
+
+// Text utilities
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-truncate-multiline($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// Layout utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Container mixin with responsive max-widths
+@mixin container($max-width: null) {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: v.$spacing-medium;
+  padding-right: v.$spacing-medium;
+
+  @if $max-width {
+    max-width: $max-width;
+  } @else {
+    @include sm {
+      max-width: v.$container-max-width-sm;
+    }
+    @include md {
+      max-width: v.$container-max-width-md;
+    }
+    @include lg {
+      max-width: v.$container-max-width-lg;
+    }
+    @include xl {
+      max-width: v.$container-max-width-xl;
+    }
+    @include xxl {
+      max-width: v.$container-max-width-xxl;
+    }
+  }
+}
+
+// Grid system
+@mixin row($gutter: v.$grid-gutter-width) {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: calc($gutter / -2);
+  margin-right: calc($gutter / -2);
+}
+
+@mixin col($size: null, $columns: v.$grid-columns, $gutter: v.$grid-gutter-width) {
+  position: relative;
+  width: 100%;
+  padding-left: calc($gutter / 2);
+  padding-right: calc($gutter / 2);
+
+  @if $size {
+    flex: 0 0 percentage($size / $columns);
+    max-width: percentage($size / $columns);
+  }
+}
+
+// Button mixins
+@mixin button-base($size: 'medium') {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: v.$border-radius-small;
+  font-family: v.$font-family-primary;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  @include smooth-transition(all, v.$transition-fast);
+
+  @if $size == 'small' {
+    height: v.$button-height-small;
+    padding: 0 v.$spacing-medium;
+    font-size: v.$font-size-small;
+  } @else if $size == 'medium' {
+    height: v.$button-height-medium;
+    padding: 0 v.$spacing-large;
+    font-size: v.$font-size-base;
+  } @else if $size == 'large' {
+    height: v.$button-height-large;
+    padding: 0 v.$spacing-xl;
+    font-size: v.$font-size-large;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  // Touch-friendly sizing on mobile
+  @include sm-only {
+    min-height: v.$touch-target-min-size;
+  }
+}
+
+@mixin button-primary($size: 'medium') {
+  @include button-base($size);
+  background-color: v.$primary-color;
+  color: v.$white-color;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust(v.$primary-color, $lightness: -10%);
+    transform: translateY(-1px);
+    @include box-shadow('medium');
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+@mixin button-secondary($size: 'medium') {
+  @include button-base($size);
+  background-color: transparent;
+  color: v.$primary-color;
+  border: 1px solid v.$primary-color;
+
+  &:hover:not(:disabled) {
+    background-color: v.$primary-color-light;
+  }
+}
+
+@mixin button-outline($size: 'medium') {
+  @include button-base($size);
+  background-color: transparent;
+  color: v.$neutral-color-dark;
+  border: 1px solid v.$neutral-color-medium;
+
+  &:hover:not(:disabled) {
+    border-color: v.$neutral-color-dark;
+    background-color: rgba(v.$neutral-color-dark, 0.05);
+  }
+}
+
+// Form field mixins
+@mixin form-field-base($size: 'medium') {
+  width: 100%;
+  border: 1px solid rgba(v.$neutral-color-dark, 0.2);
+  border-radius: v.$border-radius-small;
+  font-family: v.$font-family-primary;
+  background-color: v.$white-color;
+  @include smooth-transition(border-color, v.$transition-fast);
+
+  @if $size == 'small' {
+    height: v.$input-height-small;
+    padding: 0 v.$spacing-small;
+    font-size: v.$font-size-small;
+  } @else if $size == 'medium' {
+    height: v.$input-height-medium;
+    padding: 0 v.$input-padding-horizontal;
+    font-size: v.$font-size-base;
+  } @else if $size == 'large' {
+    height: v.$input-height-large;
+    padding: 0 v.$spacing-large;
+    font-size: v.$font-size-large;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: v.$primary-color;
+    box-shadow: 0 0 0 2px rgba(v.$primary-color, 0.2);
+  }
+
+  &::placeholder {
+    color: rgba(v.$neutral-color-dark, 0.5);
+  }
+
+  &:disabled {
+    background-color: v.$neutral-color-light;
+    color: v.$neutral-color-medium;
+    cursor: not-allowed;
+  }
+
+  &.error {
+    border-color: v.$error-color;
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(v.$error-color, 0.2);
+    }
+  }
+
+  // Touch-friendly sizing on mobile
+  @include sm-only {
+    min-height: v.$touch-target-min-size;
+  }
+}
+
+@mixin form-field($size: 'medium') {
+  @include form-field-base($size);
+}
+
+@mixin form-textarea($size: 'medium') {
+  @include form-field-base($size);
+  height: auto;
+  min-height: 100px;
+  padding: v.$input-padding-vertical v.$input-padding-horizontal;
+  resize: vertical;
+}
+
+@mixin form-select($size: 'medium') {
+  @include form-field-base($size);
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right v.$spacing-small center;
+  background-size: 12px;
+  padding-right: v.$spacing-xl;
+}
+
+// Card mixins
+@mixin card-base {
+  background-color: v.$white-color;
+  border-radius: v.$border-radius-medium;
+  @include box-shadow('small');
+  overflow: hidden;
+}
+
+@mixin card($padding: v.$spacing-medium) {
+  @include card-base;
+  padding: $padding;
+}
+
+@mixin card-hover {
+  @include smooth-transition(all, v.$transition-fast);
+
+  &:hover {
+    transform: translateY(-2px);
+    @include box-shadow('medium');
+  }
+}
+
+// Responsive spacing utilities
+@mixin responsive-spacing($property, $mobile-value, $tablet-value: null, $desktop-value: null) {
+  #{$property}: $mobile-value;
+
+  @if $tablet-value {
+    @include md {
+      #{$property}: $tablet-value;
+    }
+  }
+
+  @if $desktop-value {
+    @include lg {
+      #{$property}: $desktop-value;
+    }
+  }
+}
+
+// Responsive typography
+@mixin responsive-font-size($mobile-size, $tablet-size: null, $desktop-size: null) {
+  font-size: $mobile-size;
+
+  @if $tablet-size {
+    @include md {
+      font-size: $tablet-size;
+    }
+  }
+
+  @if $desktop-size {
+    @include lg {
+      font-size: $desktop-size;
+    }
+  }
+}
+
+// Focus styles for accessibility
+@mixin focus-outline($color: v.$primary-color) {
+  &:focus {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+// Loading spinner
+@mixin loading-spinner($size: 20px, $color: v.$primary-color) {
+  display: inline-block;
+  width: $size;
+  height: $size;
+  border: 2px solid rgba($color, 0.3);
+  border-radius: 50%;
+  border-top-color: $color;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

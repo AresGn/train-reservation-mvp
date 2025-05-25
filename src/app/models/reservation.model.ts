@@ -30,6 +30,7 @@ export interface Reservation {
 
 // Optionnel: pour stocker l'état actuel de la construction d'une réservation
 export interface PartialReservation {
+  id?: string; // Ajouté pour pouvoir suivre la réservation en cours de création
   selectedTrain?: Train;
   departureStation?: Station;
   arrivalStation?: Station;
@@ -39,4 +40,6 @@ export interface PartialReservation {
   searchPassengerCategory?: PassengerCategory;
   passengers?: Passenger[];
   totalPrice?: number;
+  status?: 'pending' | 'confirmed' | 'cancelled' | 'paid'; // Ajouté pour le service de paiement
+  updatedAt?: Date; // Ajouté pour suivre les modifications
 } 

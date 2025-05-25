@@ -1,0 +1,486 @@
+// Variables de couleurs
+$primary-color: #2E7D32;
+$secondary-color: #FF6F00;
+$success-color: #4CAF50;
+$error-color: #F44336;
+$dark-text: #212121;
+$white: #FFFFFF;
+
+// Mixins pour les breakpoints
+@mixin mobile {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: 769px) and (max-width: 1024px) {
+    @content;
+  }
+}
+
+.confirmation-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba($primary-color, 0.05), rgba($secondary-color, 0.02));
+
+  @include tablet {
+    padding: 3rem 2rem;
+  }
+}
+
+// Animation de succès
+.success-animation {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: slideInFromTop 0.8s ease-out;
+
+  .success-icon {
+    margin-bottom: 1rem;
+
+    .check-icon {
+      font-size: 4rem;
+      width: 4rem;
+      height: 4rem;
+      color: $success-color;
+      animation: bounceIn 1s ease-out 0.3s both;
+    }
+  }
+
+  .success-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: $primary-color;
+    margin: 0 0 0.5rem 0;
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+
+    @include mobile {
+      font-size: 2rem;
+    }
+  }
+
+  .success-subtitle {
+    font-size: 1.2rem;
+    color: $dark-text;
+    margin: 0;
+    animation: fadeInUp 0.8s ease-out 0.7s both;
+
+    @include mobile {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Chargement
+.loading-container {
+  text-align: center;
+  padding: 3rem;
+  color: $dark-text;
+
+  .loading-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    animation: spin 2s linear infinite;
+  }
+}
+
+// Détails de la réservation
+.reservation-details {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+// Carte du billet
+.ticket-card {
+  margin-bottom: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba($primary-color, 0.1);
+  overflow: hidden;
+
+  .ticket-header {
+    background: linear-gradient(135deg, $primary-color, #1B5E20);
+    color: $white;
+    padding: 1.5rem;
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+
+      mat-icon {
+        font-size: 1.8rem;
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+    }
+
+    mat-card-subtitle {
+      color: rgba($white, 0.9);
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  mat-card-content {
+    padding: 2rem;
+  }
+}
+
+// Informations du voyage
+.journey-info {
+  .route-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 1rem;
+
+    @include mobile {
+      flex-direction: column;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .departure, .arrival {
+      flex: 1;
+
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $primary-color;
+        margin: 0 0 0.5rem 0;
+      }
+
+      .time {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: $dark-text;
+        margin: 0 0 0.25rem 0;
+      }
+
+      .date {
+        font-size: 0.9rem;
+        color: rgba($dark-text, 0.7);
+        margin: 0;
+      }
+    }
+
+    .route-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: $secondary-color;
+
+      @include mobile {
+        transform: rotate(90deg);
+      }
+
+      mat-icon {
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .duration {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: $dark-text;
+      }
+    }
+  }
+
+  mat-divider {
+    margin: 1.5rem 0;
+    background-color: rgba($primary-color, 0.2);
+  }
+}
+
+// Informations du train
+.train-info {
+  margin: 1.5rem 0;
+
+  .train-details {
+    h4 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: $dark-text;
+      margin: 0 0 1rem 0;
+
+      mat-icon {
+        color: $secondary-color;
+      }
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      .feature-tag {
+        background: rgba($secondary-color, 0.1);
+        color: $secondary-color;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Section passagers
+.passengers-section {
+  margin: 1.5rem 0;
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: $dark-text;
+    margin: 0 0 1rem 0;
+
+    mat-icon {
+      color: $secondary-color;
+    }
+  }
+
+  .passengers-list {
+    .passenger-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: rgba($primary-color, 0.05);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+
+      .passenger-info {
+        h5 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: $dark-text;
+          margin: 0 0 0.25rem 0;
+        }
+
+        p {
+          font-size: 0.9rem;
+          color: rgba($dark-text, 0.7);
+          margin: 0;
+        }
+      }
+
+      .passenger-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+// Section total
+.total-section {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba($primary-color, 0.1), rgba($secondary-color, 0.05));
+  border-radius: 12px;
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .total-label {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: $dark-text;
+    }
+
+    .total-amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $primary-color;
+    }
+  }
+}
+
+// Section actions
+.actions-section {
+  margin-bottom: 2rem;
+
+  .actions-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+    mat-card-content {
+      padding: 1.5rem;
+
+      h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: $dark-text;
+        margin: 0 0 1rem 0;
+      }
+
+      .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        @include mobile {
+          flex-direction: column;
+        }
+
+        .action-btn {
+          flex: 1;
+          min-width: 150px;
+          padding: 0.75rem 1.5rem;
+          font-weight: 500;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+
+          mat-icon {
+            margin-right: 0.5rem;
+          }
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+
+          @include mobile {
+            min-width: auto;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Section navigation
+.navigation-section {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+
+  @include mobile {
+    flex-direction: column;
+  }
+
+  .nav-btn {
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+}
+
+// Section erreur
+.error-section {
+  text-align: center;
+
+  .error-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+    mat-card-content {
+      padding: 3rem 2rem;
+
+      .error-icon {
+        font-size: 4rem;
+        width: 4rem;
+        height: 4rem;
+        color: $error-color;
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $dark-text;
+        margin: 0 0 1rem 0;
+      }
+
+      p {
+        color: rgba($dark-text, 0.7);
+        margin: 0 0 2rem 0;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

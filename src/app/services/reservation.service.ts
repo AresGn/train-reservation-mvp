@@ -78,8 +78,84 @@ export class ReservationService {
   }
 
   private loadMockReservations(): void {
-    // Exemple de données mockées
-    // Vous pouvez étendre cela selon les besoins
+    // Créer des données simulées pour tester le MVP
+    this.createMockReservationForTesting();
+  }
+
+  // Méthode pour créer une réservation simulée pour tester le paiement
+  createMockReservationForTesting(): void {
+    const mockTrain: Train = {
+      id: 'TGV-001',
+      departureLocation: 'Owendo',
+      arrivalLocation: 'Franceville',
+      departureDate: new Date('2024-01-15'),
+      departureTime: '08:30',
+      arrivalTime: '12:45',
+      duration: '4h15',
+      durationInMinutes: 255,
+      trainType: 'TGV Express',
+      basePrice: 25000,
+      availableSeats: 150,
+      features: ['WiFi', 'Restauration', 'Climatisation', 'Siège inclinable']
+    };
+
+    const mockDepartureStation: Station = {
+      id: 'owendo',
+      name: 'Owendo',
+      city: 'Libreville',
+      isMainStation: true,
+      latitude: 0.3017,
+      longitude: 9.5372
+    };
+
+    const mockArrivalStation: Station = {
+      id: 'franceville',
+      name: 'Franceville',
+      city: 'Franceville',
+      isMainStation: true,
+      latitude: -1.6333,
+      longitude: 13.5833
+    };
+
+    const mockPassengers: Passenger[] = [
+      {
+        id: 'pass-001',
+        name: 'Jean Dupont',
+        age: 35,
+        passengerCategory: PassengerCategory.STANDARD,
+        price: 25000
+      },
+      {
+        id: 'pass-002',
+        name: 'Marie Mbadinga',
+        age: 22,
+        passengerCategory: PassengerCategory.STUDENT,
+        price: 17500 // -30% réduction étudiant
+      }
+    ];
+
+    const mockReservation: PartialReservation = {
+      id: 'mock-reservation-001',
+      selectedTrain: mockTrain,
+      departureStation: mockDepartureStation,
+      arrivalStation: mockArrivalStation,
+      departureDateTime: new Date('2024-01-15T08:30:00'),
+      arrivalDateTime: new Date('2024-01-15T12:45:00'),
+      passengers: mockPassengers,
+      totalPrice: 42500,
+      passengerCount: 2,
+      searchPassengerCategory: PassengerCategory.STANDARD,
+      status: 'pending'
+    };
+
+    // Sauvegarder la réservation simulée
+    this.currentReservationState.next(mockReservation);
+
+    if (this.isBrowser) {
+      localStorage.setItem('currentReservation', JSON.stringify(mockReservation));
+    }
+
+    console.log('🎭 Données simulées créées pour le MVP:', mockReservation);
   }
 
   setSearchCriteria(criteria: SearchCriteria): void {
@@ -246,4 +322,47 @@ export class ReservationService {
   // Méthode pour permettre la navigation vers l'étape précédente
   // On pourrait sauvegarder l'état dans le localStorage ou un autre BehaviorSubject si on veut une persistance plus forte
   // Pour l'instant, currentReservationState et searchCriteriaState devraient suffire pour la navigation interne.
+
+  generatePassengerId(): string {
+    // Génère un ID simple et unique pour un passager (pour cet exemple)
+    return `pass-${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`;
+  }
+
+  updateReservationStatus(reservationId: string, status: 'pending' | 'confirmed' | 'cancelled' | 'paid'): Observable<boolean> {
+    const currentRes = this.getCurrentReservationState();
+    if (currentRes && currentRes.id === reservationId) {
+      this.updatePartialReservation({ status: status, updatedAt: new Date() });
+      // In a real app, you would also save this to a backend.
+      // For now, we update the BehaviorSubject and localStorage.
+      if (this.isBrowser) {
+        localStorage.setItem('currentReservation', JSON.stringify(this.currentReservationState.getValue()));
+      }
+      // Simulate a successful update
+      return of(true);
+    } else {
+      // If the reservation is not the current one, or not found, search in MOCK_RESERVATIONS (if used)
+      // This part might need more robust handling if you have a list of reservations managed by the service
+      const reservationInMock = this.MOCK_RESERVATIONS.find(r => r.id === reservationId);
+      if (reservationInMock) {
+        reservationInMock.status = status;
+        reservationInMock.updatedAt = new Date();
+        // Again, persist to backend if this were a real app.
+        return of(true);
+      }
+      return of(false); // Indicate reservation not found or not updated
+    }
+  }
+
+  // Méthode pour nettoyer les données de réservation
+  clearReservation(): void {
+    this.currentReservationState.next(null);
+    this.searchCriteriaState.next(null);
+
+    if (this.isBrowser) {
+      localStorage.removeItem('currentReservation');
+      localStorage.removeItem('searchCriteria');
+    }
+
+    console.log('🧹 Données de réservation nettoyées');
+  }
 }

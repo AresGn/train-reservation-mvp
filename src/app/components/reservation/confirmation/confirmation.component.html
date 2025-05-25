@@ -1,1 +1,155 @@
-<p>confirmation works!</p>
+<div class="confirmation-container">
+  <!-- Animation de succès -->
+  <div class="success-animation">
+    <div class="success-icon">
+      <mat-icon class="check-icon">check_circle</mat-icon>
+    </div>
+    <h1 class="success-title">🎉 Paiement réussi !</h1>
+    <p class="success-subtitle">Votre réservation a été confirmée avec succès</p>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+    <p>Chargement des détails de votre réservation...</p>
+  </div>
+
+  <!-- Détails de la réservation -->
+  <div *ngIf="!isLoading && reservation" class="reservation-details">
+
+    <!-- Carte principale du billet -->
+    <mat-card class="ticket-card">
+      <mat-card-header class="ticket-header">
+        <mat-card-title>
+          <mat-icon>confirmation_number</mat-icon>
+          Billet électronique
+        </mat-card-title>
+        <mat-card-subtitle>Réservation #{{ reservation.id }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Informations du voyage -->
+        <div class="journey-info">
+          <div class="route-section">
+            <div class="departure">
+              <h3>{{ reservation.selectedTrain?.departureLocation }}</h3>
+              <p class="time">{{ formatTime(reservation.selectedTrain?.departureTime || '') }}</p>
+              <p class="date">{{ formatDate(reservation.selectedTrain?.departureDate) }}</p>
+            </div>
+
+            <div class="route-arrow">
+              <mat-icon>arrow_forward</mat-icon>
+              <span class="duration">{{ reservation.selectedTrain?.duration }}</span>
+            </div>
+
+            <div class="arrival">
+              <h3>{{ reservation.selectedTrain?.arrivalLocation }}</h3>
+              <p class="time">{{ formatTime(reservation.selectedTrain?.arrivalTime || '') }}</p>
+              <p class="date">{{ formatDate(reservation.selectedTrain?.departureDate) }}</p>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Informations du train -->
+          <div class="train-info">
+            <div class="train-details">
+              <h4>
+                <mat-icon>train</mat-icon>
+                {{ reservation.selectedTrain?.trainType }} - {{ reservation.selectedTrain?.id }}
+              </h4>
+              <div class="features" *ngIf="reservation.selectedTrain?.features">
+                <span *ngFor="let feature of reservation.selectedTrain.features" class="feature-tag">
+                  {{ feature }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Passagers -->
+          <div class="passengers-section">
+            <h4>
+              <mat-icon>people</mat-icon>
+              Passagers ({{ reservation.passengers?.length || 0 }})
+            </h4>
+            <div class="passengers-list">
+              <div *ngFor="let passenger of reservation.passengers; let i = index" class="passenger-item">
+                <div class="passenger-info">
+                  <h5>{{ passenger.name }}</h5>
+                  <p>{{ passenger.age }} ans - {{ getPassengerStatusLabel(passenger.passengerCategory) }}</p>
+                </div>
+                <div class="passenger-price">
+                  {{ passenger.price | currency:'XAF':'symbol':'1.0-0' }} FCFA
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Total -->
+          <div class="total-section">
+            <div class="total-row">
+              <span class="total-label">Total payé</span>
+              <span class="total-amount">{{ reservation.totalPrice | currency:'XAF':'symbol':'1.0-0' }} FCFA</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Actions -->
+    <div class="actions-section">
+      <mat-card class="actions-card">
+        <mat-card-content>
+          <h4>Actions disponibles</h4>
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="downloadPDF()" class="action-btn">
+              <mat-icon>download</mat-icon>
+              Télécharger PDF
+            </button>
+
+            <button mat-stroked-button (click)="shareTicket()" class="action-btn">
+              <mat-icon>share</mat-icon>
+              Partager
+            </button>
+
+            <button mat-stroked-button (click)="addToCalendar()" class="action-btn">
+              <mat-icon>event</mat-icon>
+              Ajouter au calendrier
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation-section">
+      <button mat-stroked-button (click)="goToHome()" class="nav-btn">
+        <mat-icon>home</mat-icon>
+        Retour à l'accueil
+      </button>
+
+      <button mat-raised-button color="accent" (click)="bookAnother()" class="nav-btn">
+        <mat-icon>add</mat-icon>
+        Nouvelle réservation
+      </button>
+    </div>
+  </div>
+
+  <!-- Message d'erreur si pas de réservation -->
+  <div *ngIf="!isLoading && !reservation" class="error-section">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <mat-icon class="error-icon">error</mat-icon>
+        <h3>Aucune réservation trouvée</h3>
+        <p>Nous n'avons pas pu charger les détails de votre réservation.</p>
+        <button mat-raised-button color="primary" (click)="goToHome()">
+          Retour à l'accueil
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,91 +1,71 @@
 @use 'sass:color';
+@use '../../../../assets/styles/variables' as v;
+@use '../../../../assets/styles/mixins' as m;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
-// Palette de couleurs
-$primary-color: #3F51B5;
-$secondary-color: #FF4081;
-$neutral-light: #F5F5F5;
-$white: #FFFFFF;
-$dark-text: #212121;
-$success-color: #4CAF50;
-$error-color: #F44336;
-$border-color: rgba($dark-text, 0.15);
-
-// Mixins pour responsive design
-@mixin tablet {
-  @media (min-width: 600px) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: 960px) {
-    @content;
-  }
-}
-
-// Base de l'approche mobile-first
+// Base de l'approche mobile-first avec le nouveau système responsive
 .search-container {
-  display: flex;
+  @include m.flex-center;
   flex-direction: column;
-  align-items: center;
   min-height: calc(100vh - 120px);
-  padding: 20px;
-  background: linear-gradient(135deg, rgba($primary-color, 0.05) 0%, rgba($secondary-color, 0.05) 100%), $neutral-light;
-  font-family: 'Roboto', sans-serif;
 
-  @include tablet {
-    padding: 30px;
-  }
+  // Responsive padding
+  @include m.responsive-spacing(padding,
+    v.$spacing-medium,     // Mobile
+    v.$spacing-large,     // Tablet
+    v.$spacing-xl         // Desktop
+  );
+
+  background: linear-gradient(135deg,
+    rgba(v.$primary-color, 0.05) 0%,
+    rgba(v.$secondary-color, 0.05) 100%
+  ), v.$neutral-color-light;
+
+  font-family: v.$font-family-primary;
 }
 
 .search-card {
+  @include m.card;
   width: 100%;
-  max-width: 650px;
-  background-color: $white;
-  border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  padding: 28px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  border-radius: v.$border-radius-large;
+  @include m.box-shadow('large');
 
-  @include tablet {
-    padding: 40px;
+  // Responsive sizing and padding
+  max-width: 650px;
+  @include m.responsive-spacing(padding,
+    v.$spacing-xl,        // Mobile: 32px
+    v.$spacing-xxl,       // Tablet: 48px
+    calc(#{v.$spacing-xxl} + #{v.$spacing-medium}) // Desktop: 64px
+  );
+
+  @include m.responsive-spacing(margin,
+    v.$spacing-medium 0,  // Mobile
+    v.$spacing-large 0,   // Tablet
+    v.$spacing-xl 0       // Desktop
+  );
+
+  @include m.md {
     max-width: 750px;
   }
 
-  @include desktop {
-    padding: 48px;
+  @include m.lg {
     max-width: 850px;
   }
 }
 
 .title {
-  font-size: 24px;
+  @include m.responsive-font-size(v.$font-size-xl, v.$font-size-xxl, 2rem);
   font-weight: 700;
-  color: $primary-color;
-  margin: 0 0 10px 0;
+  color: v.$primary-color;
+  margin: 0 0 v.$spacing-small 0;
   text-align: center;
-
-  @include tablet {
-    font-size: 28px;
-  }
-  @include desktop {
-    font-size: 32px;
-  }
 }
 
 .subtitle {
-  font-size: 16px;
-  color: rgba($dark-text, 0.7);
-  margin: 0 0 32px 0;
+  @include m.responsive-font-size(v.$font-size-base, v.$font-size-large);
+  color: rgba(v.$neutral-color-dark, 0.7);
+  margin: 0 0 v.$spacing-xl 0;
   text-align: center;
   line-height: 1.5;
-
-  @include tablet {
-    font-size: 18px;
-  }
 }
 
 .search-form {
@@ -95,13 +75,12 @@ $border-color: rgba($dark-text, 0.15);
 .form-row {
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  margin-bottom: 24px;
-  
-  @include tablet {
+  @include m.responsive-spacing(gap, v.$spacing-large, v.$spacing-xl);
+  @include m.responsive-spacing(margin-bottom, v.$spacing-large, v.$spacing-xl);
+
+  @include m.md {
     flex-direction: row;
-    gap: 28px;
-    
+
     .form-group {
       flex: 1;
       margin-bottom: 0;
@@ -110,19 +89,26 @@ $border-color: rgba($dark-text, 0.15);
 }
 
 .form-group {
-  margin-bottom: 24px;
+  @include m.responsive-spacing(margin-bottom, v.$spacing-large);
+
   label {
-    display: flex;
-    align-items: center;
-    font-size: 15px;
+    @include m.flex-center;
+    justify-content: flex-start;
+    @include m.responsive-font-size(v.$font-size-small, v.$font-size-base);
     font-weight: 500;
-    margin-bottom: 10px;
-    color: $dark-text;
+    margin-bottom: v.$spacing-small;
+    color: v.$neutral-color-dark;
+
     svg {
-      margin-right: 8px;
-      color: $primary-color;
+      margin-right: v.$spacing-small;
+      color: v.$primary-color;
       width: 20px;
       height: 20px;
+
+      @include m.md {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
 }
@@ -136,32 +122,24 @@ input[type="text"],
 input[type="date"],
 input[type="number"],
 select {
-  width: 100%;
-  padding: 15px 20px;
-  font-size: 16px;
-  border: 1px solid $border-color;
-  border-radius: 8px;
-  background-color: $white;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  color: $dark-text;
+  @include m.form-field('large');
+  border-radius: v.$border-radius-small;
 
-  &:focus {
-    outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
-    background-color: $white;
+  // Enhanced mobile experience
+  @include m.sm-only {
+    font-size: 16px; // Prevent zoom on iOS
+    min-height: v.$touch-target-min-size;
   }
 
   &.is-invalid {
-    border-color: $error-color;
-    box-shadow: 0 0 0 3px rgba($error-color, 0.2);
+    border-color: v.$error-color;
     &:focus {
-        box-shadow: 0 0 0 3px rgba($error-color, 0.25);
+      box-shadow: 0 0 0 2px rgba(v.$error-color, 0.2);
     }
   }
-  
+
   &::placeholder {
-    color: rgba($dark-text, 0.45);
+    color: rgba(v.$neutral-color-dark, 0.45);
     font-style: normal;
   }
 }
@@ -182,15 +160,15 @@ select {
 .number-input {
   display: flex;
   align-items: center;
-  border: 1px solid $border-color;
+  border: 1px solid v.$border-color;
   border-radius: 8px;
   overflow: hidden;
 
   input[type="number"] {
     text-align: center;
     border: none;
-    border-left: 1px solid $border-color;
-    border-right: 1px solid $border-color;
+    border-left: 1px solid v.$border-color;
+    border-right: 1px solid v.$border-color;
     border-radius: 0;
     flex-grow: 1;
     padding: 15px 10px;
@@ -199,14 +177,14 @@ select {
         box-shadow: none;
     }
     &.is-invalid {
-        border-color: $error-color;
-        background-color: rgba($error-color, 0.05);
+        border-color: v.$error-color;
+        background-color: rgba(v.$error-color, 0.05);
     }
   }
 
   .number-button {
-    background-color: $neutral-light; 
-    color: $primary-color;
+    background-color: v.$neutral-light;
+    color: v.$primary-color;
     border: none;
     width: 52px;
     height: 57px;
@@ -219,28 +197,28 @@ select {
     transition: background-color 0.2s, color 0.2s;
 
     &:hover:not(:disabled) {
-      background-color: rgba($primary-color, 0.1);
-      color: $primary-color;
+      background-color: rgba(v.$primary-color, 0.1);
+      color: v.$primary-color;
     }
-    
+
     &:disabled {
-      background-color: rgba($dark-text, 0.05);
-      color: rgba($dark-text, 0.4);
+      background-color: rgba(v.$dark-text, 0.05);
+      color: rgba(v.$dark-text, 0.4);
       cursor: not-allowed;
     }
   }
   &:has(input.is-invalid) {
-    border-color: $error-color;
-    box-shadow: 0 0 0 3px rgba($error-color, 0.2);
+    border-color: v.$error-color;
+    box-shadow: 0 0 0 3px rgba(v.$error-color, 0.2);
   }
   &:focus-within {
-    border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
+    border-color: v.$primary-color;
+    box-shadow: 0 0 0 3px rgba(v.$primary-color, 0.25);
   }
 }
 
 .invalid-feedback {
-  color: $error-color;
+  color: v.$error-color;
   font-size: 13px;
   margin-top: 6px;
   display: block;
@@ -256,80 +234,92 @@ select {
   right: 0;
   max-height: 220px;
   overflow-y: auto;
-  background-color: $white;
-  border: 1px solid rgba($dark-text, 0.2);
+  background-color: v.$white;
+  border: 1px solid rgba(v.$dark-text, 0.2);
   border-radius: 8px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  
+
   .suggestion-item {
     padding: 14px 20px;
     cursor: pointer;
     transition: background-color 0.2s;
     font-size: 16px;
-    
+
     &:hover, &:focus {
-      background-color: $primary-color;
-      color: $white;
-      .station-name, .station-city { color: $white; }
+      background-color: v.$primary-color;
+      color: v.$white;
+      .station-name, .station-city { color: v.$white; }
     }
-    
+
     .station-name {
       font-weight: 500;
-      color: $dark-text;
+      color: v.$dark-text;
     }
-    
+
     .station-city {
       font-size: 14px;
-      color: rgba($dark-text, 0.65);
+      color: rgba(v.$dark-text, 0.65);
       margin-left: 8px;
     }
 
     &:not(:last-child) {
-      border-bottom: 1px solid rgba($dark-text, 0.08);
+      border-bottom: 1px solid rgba(v.$dark-text, 0.08);
     }
   }
 }
 
-// Bouton de recherche
+// Bouton de recherche avec amélioration responsive
 .search-button {
+  @include m.button-primary('large');
   width: 100%;
-  padding: 16px 20px;
-  margin-top: 32px;
-  background-image: linear-gradient(to right, $primary-color 0%, color.adjust($primary-color, $lightness: 10%) 50%, $primary-color 100%);
-  background-size: 200% auto;
-  color: $white;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
+  @include m.responsive-spacing(margin-top, v.$spacing-xl, v.$spacing-xxl);
+  border-radius: v.$border-radius-small;
+  @include m.responsive-font-size(v.$font-size-large, v.$font-size-xl);
   font-weight: 500;
   text-transform: none;
   letter-spacing: 0.2px;
-  transition: background-position 0.5s, transform 0.15s, box-shadow 0.15s;
-  
+
+  // Enhanced gradient effect
+  background-image: linear-gradient(
+    to right,
+    v.$primary-color 0%,
+    color.adjust(v.$primary-color, $lightness: 10%) 50%,
+    v.$primary-color 100%
+  );
+  background-size: 200% auto;
+  @include m.smooth-transition(background-position, 0.5s);
+
+  // Enhanced mobile touch targets
+  @include m.sm-only {
+    min-height: v.$touch-target-min-size;
+    font-size: 16px; // Prevent zoom on iOS
+  }
+
   &:hover:not(:disabled) {
     background-position: right center;
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba($primary-color, 0.3);
-  }
-  
-  &:active:not(:disabled) {
-    transform: translateY(0px);
-    box-shadow: 0 3px 6px rgba($primary-color, 0.2);
-  }
-  
-  &:disabled {
-    background-image: none;
-    background-color: rgba($dark-text, 0.15);
-    color: rgba($dark-text, 0.5);
-    opacity: 1;
+    @include m.box-shadow('large');
   }
 
-  @include tablet {
+  &:active:not(:disabled) {
+    transform: translateY(0px);
+    @include m.box-shadow('medium');
+  }
+
+  &:disabled {
+    background-image: none;
+    background-color: rgba(v.$neutral-color-dark, 0.15);
+    color: rgba(v.$neutral-color-dark, 0.5);
+    opacity: 1;
+    cursor: not-allowed;
+  }
+
+  @include m.md {
     width: auto;
     min-width: 250px;
     align-self: center;
-    padding: 18px 30px;
+    padding: v.$spacing-large v.$spacing-xl;
   }
 }
 
@@ -337,15 +327,15 @@ select {
 .pricing-info {
   margin-top: 40px;
   padding: 24px;
-  border: 1px dashed $border-color;
-  background-color: $white;
+  border: 1px dashed v.$border-color;
+  background-color: v.$white;
   border-radius: 8px;
   text-align: left;
-  
+
   h3 {
     font-size: 18px;
     font-weight: 500;
-    color: $primary-color;
+    color: v.$primary-color;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -355,22 +345,22 @@ select {
       height: 22px;
     }
   }
-  
+
   ul {
     padding-left: 0;
     list-style: none;
     margin: 0;
-    
+
     li {
       font-size: 15px;
-      color: rgba($dark-text, 0.85);
+      color: rgba(v.$dark-text, 0.85);
       margin-bottom: 10px;
       display: flex;
       align-items: center;
       &::before {
         content: '-';
         margin-right: 10px;
-        color: $secondary-color;
+        color: v.$secondary-color;
         font-weight: bold;
       }
       &:last-child {

@@ -1,0 +1,80 @@
+@use 'sass:color';
+@use 'variables' as v;
+@use 'mixins' as m;
+
+.button {
+  @include m.button-base;
+  border: none;
+
+  &.button-primary {
+    background-color: v.$primary-color;
+    color: v.$white-color;
+
+    &:hover:not(:disabled) {
+      background-color: color.adjust(v.$primary-color, $lightness: -8%);
+    }
+
+    &:active:not(:disabled) {
+      background-color: color.adjust(v.$primary-color, $lightness: -12%);
+    }
+  }
+
+  &.button-secondary {
+    background-color: v.$secondary-color;
+    color: v.$white-color;
+
+    &:hover:not(:disabled) {
+      background-color: color.adjust(v.$secondary-color, $lightness: -8%);
+    }
+
+    &:active:not(:disabled) {
+      background-color: color.adjust(v.$secondary-color, $lightness: -12%);
+    }
+  }
+  
+  &.button-outline-primary {
+    background-color: transparent;
+    color: v.$primary-color;
+    border: 1px solid v.$primary-color;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(v.$primary-color, 0.1);
+    }
+  }
+
+  &.button-outline-secondary {
+    background-color: transparent;
+    color: v.$secondary-color;
+    border: 1px solid v.$secondary-color;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(v.$secondary-color, 0.1);
+    }
+  }
+
+  &.button-link {
+    background-color: transparent;
+    color: v.$primary-color;
+    padding: v.$spacing-small;
+
+    &:hover:not(:disabled) {
+      text-decoration: underline;
+    }
+  }
+
+  // Tailles
+  &.button-small {
+    font-size: v.$font-size-small;
+    padding: (v.$spacing-small * 0.75) (v.$spacing-medium * 0.75);
+  }
+
+  &.button-large {
+    font-size: v.$font-size-large;
+    padding: (v.$spacing-small * 1.25) (v.$spacing-medium * 1.25);
+  }
+
+  // Pleine largeur
+  &.button-full-width {
+    width: 100%;
+  }
+} 

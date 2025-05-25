@@ -1,21 +1,109 @@
-// Palette de Couleurs
-$primary-color: #3F51B5;      // Bleu indigo
-$secondary-color: #FF4081;    // Rose
-$neutral-light: #F5F5F5;     // Gris clair
-$white: #FFFFFF;             // Blanc
-$dark-text: #212121;          // Gris foncé
+// Couleurs principales
+$primary-color: #3F51B5;
+$secondary-color: #FF4081;
+$white-color: #FFFFFF;
+$error-color: #F44336;
+$success-color: #4CAF50;
+$neutral-color-light: #F5F5F5;
+$neutral-color-dark: #212121;
 
-// Couleurs d'accentuation
-$success-color: #4CAF50;      // Vert pour les succès
-$error-color: #F44336;        // Rouge pour les erreurs
+// Couleurs étendues pour le responsive design
+$neutral-color-medium: #9E9E9E;
+$neutral-color-lighter: #FAFAFA;
+$primary-color-light: rgba($primary-color, 0.1);
+$secondary-color-light: rgba($secondary-color, 0.1);
 
-// Autres variables de base (peuvent être étendues)
-$base-font-family: 'Roboto', sans-serif;
-$base-font-size: 16px;
+// Typographie responsive
+$font-family-primary: 'Roboto', sans-serif;
+$font-size-xs: 12px;
+$font-size-small: 14px;
+$font-size-base: 16px;
+$font-size-large: 18px;
+$font-size-xl: 24px;
+$font-size-xxl: 32px;
+
+// Espacements responsive
+$spacing-unit: 8px;
+$spacing-xs: $spacing-unit * 0.5; // 4px
+$spacing-small: $spacing-unit; // 8px
+$spacing-medium: $spacing-unit * 2; // 16px
+$spacing-large: $spacing-unit * 3; // 24px
+$spacing-xl: $spacing-unit * 4; // 32px
+$spacing-xxl: $spacing-unit * 6; // 48px
+
+// Breakpoints standardisés (mobile-first approach)
+$breakpoint-xs: 320px;   // Très petits mobiles
+$breakpoint-sm: 576px;   // Petits mobiles
+$breakpoint-md: 768px;   // Tablettes
+$breakpoint-lg: 1024px;  // Petits desktops
+$breakpoint-xl: 1200px;  // Grands desktops
+$breakpoint-xxl: 1400px; // Très grands écrans
+
+// Breakpoints legacy (pour compatibilité)
+$mobile: $breakpoint-sm - 1px;
+$tablet: $breakpoint-lg - 1px;
+$desktop: $breakpoint-xl;
+$breakpoint-tablet: $breakpoint-md;
+$breakpoint-desktop: $breakpoint-lg;
+
+// Additional color variables for compatibility (defined after breakpoints)
+$neutral-dark-gray: $neutral-color-dark;
+$neutral-light-gray: $neutral-color-light;
+$neutral-white: $white-color;
+$accent-success: $success-color;
+$accent-error: $error-color;
+$mobile-breakpoint: $breakpoint-sm;
+
+// Legacy color variables for backward compatibility
+$neutral-light: $neutral-color-light;
+$white: $white-color;
+$dark-text: $neutral-color-dark;
+
+// Border radius responsive
+$border-radius-xs: 2px;
+$border-radius-small: 4px;
+$border-radius-medium: 8px;
+$border-radius-large: 16px;
+$border-radius-xl: 24px;
+
+// Shadows responsive
+$shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+$shadow-large: 0 8px 16px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.15);
+
+// Variables pour les éléments interactifs (touch-friendly)
+$touch-target-min-size: 44px; // Taille minimale recommandée pour les éléments tactiles
+$button-height-small: 36px;
+$button-height-medium: 44px;
+$button-height-large: 52px;
+
+// Variables pour les formulaires
+$input-height-small: 36px;
+$input-height-medium: 44px;
+$input-height-large: 52px;
+$input-padding-horizontal: $spacing-medium;
+$input-padding-vertical: $spacing-small;
+
+// Variables pour les conteneurs
+$container-max-width-sm: 540px;
+$container-max-width-md: 720px;
+$container-max-width-lg: 960px;
+$container-max-width-xl: 1140px;
+$container-max-width-xxl: 1320px;
+
+// Variables pour les grilles
+$grid-gutter-width: $spacing-large;
+$grid-columns: 12;
+
+// Autres variables de base
+$base-font-family: $font-family-primary;
+$base-font-size: $font-size-base;
 $base-line-height: 1.6;
+$border-color: rgba($neutral-color-dark, 0.15);
 
-$border-color: rgba($dark-text, 0.15); // Une couleur de bordure commune
-
-// Breakpoints (seront utilisés par les mixins)
-$breakpoint-tablet: 600px;
-$breakpoint-desktop: 960px; 
+// Variables pour les transitions
+$transition-fast: 0.15s ease;
+$transition-base: 0.3s ease;
+$transition-slow: 0.5s ease;

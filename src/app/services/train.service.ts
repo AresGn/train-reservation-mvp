@@ -7,102 +7,131 @@ import { Train, Station, GABON_STATIONS, PassengerCategory } from '../models/tra
   providedIn: 'root'
 })
 export class TrainService {
-  // Données mockées pour simuler une API
-  private mockTrains: Train[] = [
-    {
-      id: 'train-001',
-      departureLocation: 'Owendo',
-      arrivalLocation: 'Franceville',
-      departureDate: new Date('2023-12-15'),
-      departureTime: '08:00',
-      arrivalTime: '18:00',
-      duration: '10h00',
-      trainType: 'Express',
-      basePrice: 45000,
-      availableSeats: 120,
-      features: ['WiFi', 'Restauration', 'Climatisation', 'Siège inclinable']
-    },
-    {
-      id: 'train-002',
-      departureLocation: 'Owendo',
-      arrivalLocation: 'Franceville',
-      departureDate: new Date('2023-12-15'),
-      departureTime: '10:30',
-      arrivalTime: '21:00',
-      duration: '10h30',
-      trainType: 'Standard',
-      basePrice: 30000,
-      availableSeats: 150,
-      features: ['Climatisation', 'Snack Bar']
-    },
-    {
-      id: 'train-006',
-      departureLocation: 'Owendo',
-      arrivalLocation: 'Franceville',
-      departureDate: new Date('2023-12-15'),
-      departureTime: '13:00',
-      arrivalTime: '22:00',
-      duration: '9h00',
-      trainType: 'Premium',
-      basePrice: 60000,
-      availableSeats: 80,
-      features: ['WiFi Premium', 'Repas inclus', 'Siège large', 'Priorité Embarquement']
-    },
-    {
-      id: 'train-007',
-      departureLocation: 'Owendo',
-      arrivalLocation: 'Franceville',
-      departureDate: new Date('2023-12-15'),
-      departureTime: '16:00',
-      arrivalTime: '03:00',
-      duration: '11h00',
-      trainType: 'Eco',
-      basePrice: 25000,
-      availableSeats: 200,
-      features: ['Climatisation basique']
-    },
-    {
-      id: 'train-003',
-      departureLocation: 'Franceville',
-      arrivalLocation: 'Owendo',
-      departureDate: new Date('2023-12-16'),
-      departureTime: '07:00',
-      arrivalTime: '17:30',
-      duration: '10h30',
-      trainType: 'Express',
-      basePrice: 35000,
-      availableSeats: 100,
-      features: ['WiFi', 'Restauration', 'Climatisation']
-    },
-    {
-      id: 'train-004',
-      departureLocation: 'Ndjolé',
-      arrivalLocation: 'Lastourville',
-      departureDate: new Date('2023-12-15'),
-      departureTime: '09:15',
-      arrivalTime: '15:45',
-      duration: '6h30',
-      trainType: 'Standard',
-      basePrice: 20000,
-      availableSeats: 80,
-      features: ['Climatisation']
-    },
-    {
-      id: 'train-005',
-      departureLocation: 'Booué',
-      arrivalLocation: 'Moanda',
-      departureDate: new Date('2023-12-16'),
-      departureTime: '10:00',
-      arrivalTime: '14:30',
-      duration: '4h30',
-      trainType: 'Express',
-      basePrice: 18000,
-      availableSeats: 90,
-      features: ['WiFi', 'Climatisation']
-    }
-  ];
 
   constructor() { }
+
+  // Méthode pour générer des trains dynamiques basés sur la date de recherche
+  private generateMockTrains(searchDate: Date): Train[] {
+    const today = new Date();
+    const searchDateCopy = new Date(searchDate);
+
+    // Si la date de recherche est dans le passé, utiliser aujourd'hui
+    if (searchDateCopy < today) {
+      searchDateCopy.setTime(today.getTime());
+    }
+
+    const nextDay = new Date(searchDateCopy);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    return [
+      // Trains pour le jour de recherche
+      {
+        id: 'train-001',
+        departureLocation: 'Owendo',
+        arrivalLocation: 'Franceville',
+        departureDate: new Date(searchDateCopy),
+        departureTime: '08:00',
+        arrivalTime: '18:00',
+        duration: '10h00',
+        trainType: 'Express',
+        basePrice: 45000,
+        availableSeats: 120,
+        features: ['WiFi', 'Restauration', 'Climatisation', 'Siège inclinable']
+      },
+      {
+        id: 'train-002',
+        departureLocation: 'Owendo',
+        arrivalLocation: 'Franceville',
+        departureDate: new Date(searchDateCopy),
+        departureTime: '10:30',
+        arrivalTime: '21:00',
+        duration: '10h30',
+        trainType: 'Standard',
+        basePrice: 30000,
+        availableSeats: 150,
+        features: ['Climatisation', 'Snack Bar']
+      },
+      {
+        id: 'train-006',
+        departureLocation: 'Owendo',
+        arrivalLocation: 'Franceville',
+        departureDate: new Date(searchDateCopy),
+        departureTime: '13:00',
+        arrivalTime: '22:00',
+        duration: '9h00',
+        trainType: 'Premium',
+        basePrice: 60000,
+        availableSeats: 80,
+        features: ['WiFi Premium', 'Repas inclus', 'Siège large', 'Priorité Embarquement']
+      },
+      {
+        id: 'train-007',
+        departureLocation: 'Owendo',
+        arrivalLocation: 'Franceville',
+        departureDate: new Date(searchDateCopy),
+        departureTime: '16:00',
+        arrivalTime: '03:00',
+        duration: '11h00',
+        trainType: 'Eco',
+        basePrice: 25000,
+        availableSeats: 200,
+        features: ['Climatisation basique']
+      },
+      {
+        id: 'train-004',
+        departureLocation: 'Ndjolé',
+        arrivalLocation: 'Lastourville',
+        departureDate: new Date(searchDateCopy),
+        departureTime: '09:15',
+        arrivalTime: '15:45',
+        duration: '6h30',
+        trainType: 'Standard',
+        basePrice: 20000,
+        availableSeats: 80,
+        features: ['Climatisation']
+      },
+      {
+        id: 'train-008',
+        departureLocation: 'Booué',
+        arrivalLocation: 'Moanda',
+        departureDate: new Date(searchDateCopy),
+        departureTime: '10:00',
+        arrivalTime: '14:30',
+        duration: '4h30',
+        trainType: 'Express',
+        basePrice: 18000,
+        availableSeats: 90,
+        features: ['WiFi', 'Climatisation']
+      },
+      // Trains pour le jour suivant
+      {
+        id: 'train-003',
+        departureLocation: 'Franceville',
+        arrivalLocation: 'Owendo',
+        departureDate: new Date(nextDay),
+        departureTime: '07:00',
+        arrivalTime: '17:30',
+        duration: '10h30',
+        trainType: 'Express',
+        basePrice: 35000,
+        availableSeats: 100,
+        features: ['WiFi', 'Restauration', 'Climatisation']
+      },
+      {
+        id: 'train-005',
+        departureLocation: 'Booué',
+        arrivalLocation: 'Moanda',
+        departureDate: new Date(nextDay),
+        departureTime: '10:00',
+        arrivalTime: '14:30',
+        duration: '4h30',
+        trainType: 'Express',
+        basePrice: 18000,
+        availableSeats: 90,
+        features: ['WiFi', 'Climatisation']
+      }
+    ];
+  }
 
   getAllStations(): Station[] {
     return GABON_STATIONS;
@@ -133,12 +162,15 @@ export class TrainService {
     const searchDateString = departureDate.toISOString().split('T')[0];
     console.log(`Filter criteria: Departure=${departureLocation}, Arrival=${arrivalLocation}, Date=${departureDate.toISOString()} (Formatted as ${searchDateString})`);
 
-    return this.mockTrains.filter(train => {
+    // Générer les trains dynamiques basés sur la date de recherche
+    const mockTrains = this.generateMockTrains(departureDate);
+
+    return mockTrains.filter(train => {
       const trainDateString = train.departureDate.toISOString().split('T')[0];
       const match = train.departureLocation.toLowerCase() === departureLocation.toLowerCase() &&
                     train.arrivalLocation.toLowerCase() === arrivalLocation.toLowerCase() &&
                     trainDateString === searchDateString;
-      
+
       // Log pour chaque train pour voir pourquoi il ne correspond pas
       if (!match) {
         console.log(
@@ -176,4 +208,4 @@ export class TrainService {
         return basePrice; // Prix standard
     }
   }
-} 
+}

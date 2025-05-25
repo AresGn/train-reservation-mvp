@@ -2,24 +2,49 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ReservationService } from '../../../services/reservation.service';
-import { Passenger, PartialReservation } from '../../../models/reservation.model';
+import { Passenger as PassengerData } from '../../../models/passenger.model'; 
+import { PartialReservation, Passenger as ReservationPassenger } from '../../../models/reservation.model';
 import { PassengerCategory } from '../../../models/train.model';
 
 @Component({
   selector: 'app-passenger-details',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule
+  ],
   templateUrl: './passenger-details.component.html',
   styleUrls: ['./passenger-details.component.scss']
 })
 export class PassengerDetailsComponent implements OnInit {
   passengerForm!: FormGroup;
   currentReservation: PartialReservation | null = null;
-  passengerCategories = Object.values(PassengerCategory);
   isLoading = true;
   errorMessage: string | null = null;
   baseTrainPrice = 0;
+
+  ticketTypes = [
+    { value: 'standard', label: 'Standard' },
+    { value: 'business', label: 'Business' },
+    { value: 'first', label: 'Première classe' }
+  ];
+
+  passengerStatuses = [
+    { value: 'standard', label: 'Standard', discount: 0 },
+    { value: 'student', label: 'Étudiant (30% de réduction)', discount: 0.30 },
+    { value: 'senior', label: '3ème âge (35% de réduction)', discount: 0.35 }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -28,97 +53,90 @@ export class PassengerDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.passengerForm = this.fb.group({
+      passengers: this.fb.array([])
+    });
     this.loadReservationData();
   }
 
   loadReservationData(): void {
+    this.isLoading = true;
     this.currentReservation = this.reservationService.getCurrentReservationState();
-    if (!this.currentReservation || !this.currentReservation.selectedTrain || !this.currentReservation.passengers) {
+
+    if (!this.currentReservation || !this.currentReservation.selectedTrain || this.currentReservation.passengerCount === undefined) {
       this.errorMessage = "Impossible de charger les détails de la réservation. Veuillez recommencer la recherche.";
       this.isLoading = false;
-      // Optionnellement, rediriger vers la page de recherche
-      // this.router.navigate(['/search']);
       return;
     }
+
     this.baseTrainPrice = this.currentReservation.selectedTrain.basePrice;
-    this.initializeForm(this.currentReservation.passengers);
+    this.initializeFormBasedOnCount(this.currentReservation.passengerCount);
     this.isLoading = false;
   }
 
-  initializeForm(passengersData: Passenger[]): void {
-    this.passengerForm = this.fb.group({
-      passengers: this.fb.array([])
-    });
+  initializeFormBasedOnCount(passengerCount: number): void {
+    const passengersArray = this.passengerForm.get('passengers') as FormArray;
+    passengersArray.clear(); 
 
-    passengersData.forEach(passenger => {
-      this.addPassengerToForm(passenger);
-    });
+    for (let i = 0; i < passengerCount; i++) {
+      const passengerGroup = this.fb.group({
+        firstName: ['', [Validators.required, Validators.minLength(2)]],
+        lastName: ['', [Validators.required, Validators.minLength(2)]],
+        age: ['', [Validators.required, Validators.min(0), Validators.max(120)]],
+        status: ['standard', Validators.required],
+        ticketType: ['standard', Validators.required],
+        emergencyContact: ['', [Validators.required, Validators.pattern('^\\+?[0-9]{8,}$')]],
+        price: [{ value: this.calculatePrice('standard', 'standard'), disabled: true }]
+      });
 
-    // Écouter les changements pour recalculer les prix dynamiquement
-    this.passengersFormArray.valueChanges.subscribe(passengers => {
-      this.updatePrices(passengers);
-    });
+      passengerGroup.get('status')?.valueChanges.subscribe(statusValue => {
+        const ticketTypeValue = passengerGroup.get('ticketType')?.value;
+        const newPrice = this.calculatePrice(statusValue ?? 'standard', ticketTypeValue ?? 'standard');
+        passengerGroup.get('price')?.setValue(newPrice, { emitEvent: false });
+        this.updateTotalReservationPrice();
+      });
+
+      passengerGroup.get('ticketType')?.valueChanges.subscribe(ticketTypeValue => {
+        const statusValue = passengerGroup.get('status')?.value;
+        const newPrice = this.calculatePrice(statusValue ?? 'standard', ticketTypeValue ?? 'standard');
+        passengerGroup.get('price')?.setValue(newPrice, { emitEvent: false });
+        this.updateTotalReservationPrice();
+      });
+      passengersArray.push(passengerGroup);
+    }
+    this.updateTotalReservationPrice();
   }
 
   get passengersFormArray(): FormArray {
     return this.passengerForm.get('passengers') as FormArray;
   }
 
-  addPassengerToForm(passenger: Passenger): void {
-    const passengerGroup = this.fb.group({
-      id: [passenger.id],
-      name: [passenger.name, Validators.required],
-      age: [passenger.age, [Validators.required, Validators.min(0), Validators.max(120)]],
-      passengerCategory: [passenger.passengerCategory, Validators.required],
-      seatPreference: [passenger.seatPreference || ''],
-      emergencyContact: [passenger.emergencyContact || '', Validators.pattern(/^(\+?\d{1,3}[- ]?)?\d{9,11}$/)], // Simple validation de numéro
-      price: [{value: passenger.price, disabled: true}] // Le prix est affiché mais non modifiable directement
-    });
-    this.passengersFormArray.push(passengerGroup);
+  calculatePrice(statusValue: string, ticketTypeValue: string): number {
+    let price = this.baseTrainPrice;
+    const statusInfo = this.passengerStatuses.find(s => s.value === statusValue);
+    if (statusInfo) {
+      price = price * (1 - statusInfo.discount);
+    }
+    switch (ticketTypeValue) {
+      case 'business': price *= 1.5; break;
+      case 'first': price *= 2; break;
+    }
+    return parseFloat(price.toFixed(2));
   }
-
-  updatePrices(passengersValues: any[]): void {
-    if (!this.currentReservation || !this.currentReservation.selectedTrain) return;
-
-    const updatedPassengers: Passenger[] = passengersValues.map((pVal, index) => {
-      const originalPassenger = this.currentReservation!.passengers![index];
-      const updatedPassenger: Passenger = {
-        ...originalPassenger, // Conserve l'ID et autres infos non modifiées par le formulaire
-        name: pVal.name,
-        age: pVal.age,
-        passengerCategory: pVal.passengerCategory,
-        seatPreference: pVal.seatPreference,
-        emergencyContact: pVal.emergencyContact,
-        // Le prix sera recalculé par le service
-        price: 0 // Sera mis à jour par calculatePassengerPrice
-      };
-       // Mettre à jour le contrôle de formulaire avec le prix calculé (si on veut l'afficher)
-      const calculatedPrice = this.reservationService.calculatePassengerPrice(updatedPassenger, this.baseTrainPrice);
-      this.passengersFormArray.at(index).get('price')?.setValue(calculatedPrice, { emitEvent: false });
-      updatedPassenger.price = calculatedPrice; // S'assurer que le prix est bien celui calculé
-      return updatedPassenger;
-    });
-
-    const totalPrice = updatedPassengers.reduce((sum, p) => sum + p.price, 0);
-    this.currentReservation.passengers = updatedPassengers;
-    this.currentReservation.totalPrice = totalPrice;
-    // Optionnel: mettre à jour l'état dans le service si on veut que d'autres composants y réagissent immédiatement
-    // this.reservationService.updatePartialReservation({ passengers: updatedPassengers, totalPrice });
-  }
-
-  // Méthode pour afficher les catégories de passagers de manière lisible
-  getPassengerCategoryLabel(categoryValue: PassengerCategory): string {
-    switch (categoryValue) {
-      case PassengerCategory.STANDARD: return 'Standard';
-      case PassengerCategory.STUDENT: return 'Étudiant';
-      case PassengerCategory.SENIOR: return 'Senior';
-      default: return categoryValue;
+  
+  updateTotalReservationPrice(): void {
+    if(this.currentReservation){
+        this.currentReservation.totalPrice = this.passengersFormArray.controls
+        .reduce((total, passengerControl) => total + (passengerControl.get('price')?.value || 0),0);
     }
   }
 
+  getTotalPriceDisplay(): number {
+     return this.passengersFormArray.controls
+        .reduce((total, passengerControl) => total + (passengerControl.get('price')?.value || 0),0);
+  }
+
   goBack(): void {
-    // Naviguer vers la page de sélection de train
-    // L'état de la réservation (train sélectionné, etc.) est conservé dans le service
     this.router.navigate(['/select-train']);
   }
 
@@ -131,33 +149,40 @@ export class PassengerDetailsComponent implements OnInit {
     this.errorMessage = null;
     this.isLoading = true;
 
-    const finalPassengers = this.passengersFormArray.value.map((pVal: any, index: number) => {
-        const originalPassenger = this.currentReservation!.passengers![index];
-        return {
-            ...originalPassenger,
-            name: pVal.name,
-            age: pVal.age,
-            passengerCategory: pVal.passengerCategory,
-            seatPreference: pVal.seatPreference,
-            emergencyContact: pVal.emergencyContact,
-            price: this.passengersFormArray.at(index).get('price')?.value // Utiliser le prix déjà calculé et affiché
-        };
-    });
+    const passengersDataFromForm: PassengerData[] = this.passengersFormArray.value.map((pVal: any) => ({
+        firstName: pVal.firstName,
+        lastName: pVal.lastName,
+        age: pVal.age,
+        status: pVal.status,
+        ticketType: pVal.ticketType,
+        emergencyContact: pVal.emergencyContact,
+        price: pVal.price
+    }));
+    
+    const reservationPassengers: ReservationPassenger[] = passengersDataFromForm.map(p => ({
+        id: this.reservationService.generatePassengerId(),
+        name: `${p.firstName} ${p.lastName}`,
+        age: p.age,
+        passengerCategory: p.status as PassengerCategory,
+        ticketType: p.ticketType,
+        emergencyContact: p.emergencyContact,
+        price: p.price || 0,
+    }));
 
-    this.reservationService.updatePassengerDetails(finalPassengers).subscribe({
-      next: (updatedReservation) => {
+    this.reservationService.updatePassengerDetails(reservationPassengers).subscribe({
+      next: () => {
         this.isLoading = false;
         this.router.navigate(['/payment']);
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = `Erreur lors de la mise à jour des passagers: ${err.message}`;
+        this.errorMessage = `Erreur lors de la mise à jour des passagers: ${err.message || 'Erreur inconnue'}`;
       }
     });
   }
 
   private markFormGroupTouched(formGroup: FormGroup | FormArray) {
-    (<any>Object).values(formGroup.controls).forEach((control: any) => {
+    Object.values(formGroup.controls).forEach((control: any) => {
       control.markAsTouched();
       if (control.controls) {
         this.markFormGroupTouched(control);

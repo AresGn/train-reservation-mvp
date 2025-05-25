@@ -1,1 +1,238 @@
-<p>payment works!</p>
+<div class="payment-container">
+  <div class="progress-header">
+    <h2>Paiement de votre réservation</h2>
+    <!-- Barre de progression optionnelle -->
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des informations de paiement...</p>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="error-message-container">
+    <mat-card class="error-card">
+      <mat-card-title>Erreur</mat-card-title>
+      <mat-card-content>
+        <p>{{ errorMessage }}</p>
+        <button mat-stroked-button color="warn" (click)="goBack()">Retour aux détails</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && currentReservation" class="content-wrapper">
+    <!-- Résumé détaillé de la réservation -->
+    <mat-card class="summary-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>confirmation_number</mat-icon>
+          Récapitulatif de votre réservation
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content *ngIf="currentReservation.selectedTrain">
+        <!-- Informations du train -->
+        <div class="train-info-section">
+          <h4>
+            <mat-icon>train</mat-icon>
+            Informations du voyage
+          </h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Train :</span>
+              <span class="value">{{ currentReservation.selectedTrain.id }} - {{ currentReservation.selectedTrain.trainType }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Départ :</span>
+              <span class="value">
+                {{ currentReservation.departureStation?.name }} ({{ currentReservation.departureStation?.city }})
+                <br>
+                <small>{{ currentReservation.departureDateTime | date:'EEEE dd MMMM yyyy à HH:mm':'fr' }}</small>
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="label">Arrivée :</span>
+              <span class="value">
+                {{ currentReservation.arrivalStation?.name }} ({{ currentReservation.arrivalStation?.city }})
+                <br>
+                <small>{{ currentReservation.arrivalDateTime | date:'EEEE dd MMMM yyyy à HH:mm':'fr' }}</small>
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="label">Durée :</span>
+              <span class="value">{{ currentReservation.selectedTrain.durationInMinutes }} minutes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Détails des passagers -->
+        <div class="passengers-info-section" *ngIf="currentReservation.passengers && currentReservation.passengers.length > 0">
+          <h4>
+            <mat-icon>people</mat-icon>
+            Détails des passagers ({{ currentReservation.passengers.length }})
+          </h4>
+          <div class="passengers-list">
+            <div *ngFor="let passenger of currentReservation.passengers; let i = index" class="passenger-item">
+              <div class="passenger-header">
+                <span class="passenger-number">Passager {{ i + 1 }}</span>
+                <span class="passenger-price">{{ passenger.price | currency:'XAF':'symbol':'1.0-0' }} FCFA</span>
+              </div>
+              <div class="passenger-details">
+                <span class="passenger-name">{{ passenger.name }}</span>
+                <span class="passenger-info">{{ passenger.age }} ans - {{ getPassengerStatusLabel(passenger.passengerCategory) }}</span>
+                <span class="ticket-type">Billet Standard</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Récapitulatif des prix -->
+        <div class="price-breakdown-section">
+          <h4>
+            <mat-icon>receipt</mat-icon>
+            Détail des prix
+          </h4>
+          <div class="price-details">
+            <div *ngFor="let passenger of currentReservation.passengers; let i = index" class="price-line">
+              <span>Passager {{ i + 1 }} ({{ getPassengerStatusLabel(passenger.passengerCategory) }})</span>
+              <span>{{ passenger.price | currency:'XAF':'symbol':'1.0-0' }} FCFA</span>
+            </div>
+            <div class="price-line total-line">
+              <span><strong>Total à payer</strong></span>
+              <span><strong>{{ currentReservation.totalPrice | currency:'XAF':'symbol':'1.0-0' }} FCFA</strong></span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-content *ngIf="!currentReservation.selectedTrain">
+        <div class="no-data-message">
+          <mat-icon>error_outline</mat-icon>
+          <p>Aucun détail de train disponible. Veuillez recommencer votre réservation.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Formulaire de paiement sécurisé -->
+    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" class="payment-form-card">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>payment</mat-icon>
+            Paiement sécurisé
+          </mat-card-title>
+          <mat-card-subtitle>
+            Choisissez votre opérateur de paiement mobile gabonais
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Sélection de l'opérateur de paiement -->
+          <div class="payment-method-section">
+            <h4>
+              <mat-icon>smartphone</mat-icon>
+              Opérateurs de paiement mobile
+            </h4>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Sélectionnez votre opérateur</mat-label>
+              <mat-select formControlName="paymentMethod" required>
+                <mat-option *ngFor="let method of paymentMethods" [value]="method.value">
+                  <div class="payment-option">
+                    <mat-icon class="payment-method-icon">{{ getPaymentMethodIcon(method.value) }}</mat-icon>
+                    <span class="payment-method-label">{{ method.label }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-hint>Tous les opérateurs gabonais sont acceptés</mat-hint>
+              <mat-error *ngIf="paymentForm.get('paymentMethod')?.errors?.['required']">
+                Veuillez sélectionner un opérateur de paiement.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Section de saisie du numéro de téléphone -->
+          <div *ngIf="selectedPaymentMethod" class="phone-input-section">
+            <h4>
+              <mat-icon>phone</mat-icon>
+              Numéro de téléphone {{ selectedPaymentMethod.label }}
+            </h4>
+
+            <div class="payment-instructions">
+              <mat-icon class="info-icon">info</mat-icon>
+              <div class="instructions-content">
+                <p><strong>Instructions pour {{ selectedPaymentMethod.label }} :</strong></p>
+                <ul>
+                  <li>Entrez votre numéro de téléphone {{ selectedPaymentMethod.label }}</li>
+                  <li>Assurez-vous que votre compte a un solde suffisant ({{ currentReservation.totalPrice | currency:'XAF':'symbol':'1.0-0' }} FCFA)</li>
+                  <li>Vous recevrez un SMS de confirmation pour valider le paiement</li>
+                </ul>
+                <p class="format-example">
+                  <strong>Format accepté :</strong> {{ getPhoneNumberExample(selectedPaymentMethod.value) }}
+                </p>
+              </div>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Numéro de téléphone {{ selectedPaymentMethod.label }}</mat-label>
+              <span matPrefix>{{ selectedPaymentMethod.countryCode }}&nbsp;</span>
+              <input matInput
+                     formControlName="phoneNumber"
+                     type="tel"
+                     placeholder="{{ getPhoneNumberPlaceholder(selectedPaymentMethod.value) }}"
+                     maxlength="9">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-hint>Entrez votre numéro sans l'indicatif pays</mat-hint>
+              <mat-error *ngIf="phoneNumberControl?.errors?.['required']">
+                Le numéro de téléphone est requis.
+              </mat-error>
+              <mat-error *ngIf="phoneNumberControl?.errors?.['pattern']">
+                Format du numéro invalide pour {{ selectedPaymentMethod.label }}.
+                <br>Exemple valide : {{ getPhoneNumberExample(selectedPaymentMethod.value) }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Simulation de sécurité -->
+            <div class="security-info">
+              <mat-icon class="security-icon">security</mat-icon>
+              <div class="security-content">
+                <h5>Paiement sécurisé</h5>
+                <p>Votre transaction est protégée par un cryptage SSL 256 bits. Aucune information bancaire n'est stockée sur nos serveurs.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message d'erreur de paiement -->
+          <div *ngIf="errorMessage" class="payment-error-message">
+            <mat-icon class="error-icon">error</mat-icon>
+            <p>{{ errorMessage }}</p>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions class="form-actions">
+          <button mat-stroked-button
+                  type="button"
+                  (click)="goBack()"
+                  [disabled]="paymentProcessing"
+                  class="back-button">
+            <mat-icon>arrow_back</mat-icon>
+            Retour aux détails
+          </button>
+          <button mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="!paymentForm.valid || paymentProcessing"
+                  class="pay-button">
+            <mat-icon *ngIf="!paymentProcessing">payment</mat-icon>
+            <mat-progress-spinner *ngIf="paymentProcessing"
+                                  diameter="20"
+                                  mode="indeterminate"
+                                  class="button-spinner">
+            </mat-progress-spinner>
+            <span *ngIf="!paymentProcessing">
+              Payer {{ currentReservation.totalPrice | currency:'XAF':'symbol':'1.0-0' }} FCFA
+            </span>
+            <span *ngIf="paymentProcessing">
+              Traitement en cours...
+            </span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</div>

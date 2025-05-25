@@ -1,113 +1,362 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles for the train reservation app */
 @use 'sass:color';
-@use './assets/styles/variables' as *;
-@use './assets/styles/mixins' as *;
-// @use './assets/styles/buttons' as *; // Commented out as file may not exist
+@use './assets/styles/variables' as v;
+@use './assets/styles/mixins' as m;
 
 @import 'ol/ol.css'; // Styles de base pour OpenLayers
 
-/* Reset et styles de base */
-* {
+// Angular Material Theme (Indigo/Pink)
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* ===== RESET ET STYLES DE BASE ===== */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Roboto', Arial, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f5f5f5;
+html {
+  font-size: 16px; // Base font size for rem calculations
+  scroll-behavior: smooth;
 }
 
-/* Structure de l'application */
+body {
+  font-family: v.$font-family-primary;
+  line-height: v.$base-line-height;
+  color: v.$neutral-color-dark;
+  background-color: v.$neutral-color-light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Prevent horizontal scroll on mobile
+  overflow-x: hidden;
+}
+
+/* ===== STRUCTURE DE L'APPLICATION ===== */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
 }
 
 .main-content {
   flex: 1;
-  padding: 20px;
-  /* Ajouter un padding-top pour laisser de l'espace pour le header fixe */
-  padding-top: 84px; /* 64px pour la hauteur du header + 20px de padding */
+  width: 100%;
+
+  // Responsive padding with header offset
+  @include m.responsive-spacing(padding,
+    calc(64px + #{v.$spacing-medium}) v.$spacing-medium v.$spacing-medium, // Mobile: header + padding
+    calc(72px + #{v.$spacing-large}) v.$spacing-large v.$spacing-large,     // Tablet: larger header + padding
+    calc(72px + #{v.$spacing-xl}) v.$spacing-xl v.$spacing-xl               // Desktop: same header + more padding
+  );
 }
 
-/* Media queries */
-@media screen and (min-width: 768px) {
-  .main-content {
-    padding-top: 92px; /* 72px pour la hauteur du header + 20px de padding */
+/* ===== CLASSES UTILITAIRES RESPONSIVE ===== */
+
+// Container responsive
+.container {
+  @include m.container;
+}
+
+.container-fluid {
+  width: 100%;
+  padding-left: v.$spacing-medium;
+  padding-right: v.$spacing-medium;
+
+  @include m.md {
+    padding-left: v.$spacing-large;
+    padding-right: v.$spacing-large;
   }
 }
 
-/* Classes utilitaires */
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+// Grid system
+.row {
+  @include m.row;
 }
 
-/* Styles des boutons */
+.col {
+  @include m.col;
+}
+
+// Responsive columns
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    @include m.col($i);
+  }
+
+  .col-sm-#{$i} {
+    @include m.sm {
+      @include m.col($i);
+    }
+  }
+
+  .col-md-#{$i} {
+    @include m.md {
+      @include m.col($i);
+    }
+  }
+
+  .col-lg-#{$i} {
+    @include m.lg {
+      @include m.col($i);
+    }
+  }
+}
+
+/* ===== STYLES DES BOUTONS RESPONSIVE ===== */
 .btn {
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  @include m.button-base;
+
+  &.btn-sm {
+    @include m.button-base('small');
+  }
+
+  &.btn-lg {
+    @include m.button-base('large');
+  }
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #3F51B5;
-  border: none;
-  
-  &:hover {
-    background-color: color.adjust(#3F51B5, $lightness: -10%);
+  @include m.button-primary;
+
+  &.btn-sm {
+    @include m.button-primary('small');
+  }
+
+  &.btn-lg {
+    @include m.button-primary('large');
+  }
+}
+
+.btn-secondary {
+  @include m.button-secondary;
+
+  &.btn-sm {
+    @include m.button-secondary('small');
+  }
+
+  &.btn-lg {
+    @include m.button-secondary('large');
   }
 }
 
 .btn-outline {
-  color: #3F51B5;
-  background-color: transparent;
-  border: 1px solid #3F51B5;
-  
-  &:hover {
-    background-color: rgba(63, 81, 181, 0.1);
+  @include m.button-outline;
+
+  &.btn-sm {
+    @include m.button-outline('small');
+  }
+
+  &.btn-lg {
+    @include m.button-outline('large');
   }
 }
 
-/* Styles pour les formulaires */
-input, select, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  
-  &:focus {
-    outline: none;
-    border-color: #3F51B5;
-    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+/* ===== STYLES POUR LES FORMULAIRES RESPONSIVE ===== */
+.form-control {
+  @include m.form-field;
+
+  &.form-control-sm {
+    @include m.form-field('small');
+  }
+
+  &.form-control-lg {
+    @include m.form-field('large');
   }
 }
 
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
+.form-select {
+  @include m.form-select;
+
+  &.form-select-sm {
+    @include m.form-select('small');
+  }
+
+  &.form-select-lg {
+    @include m.form-select('large');
+  }
 }
 
-/* Débogage - Bordures pour les éléments */
+.form-textarea {
+  @include m.form-textarea;
+
+  &.form-textarea-sm {
+    @include m.form-textarea('small');
+  }
+
+  &.form-textarea-lg {
+    @include m.form-textarea('large');
+  }
+}
+
+.form-group {
+  margin-bottom: v.$spacing-medium;
+
+  label {
+    display: block;
+    margin-bottom: v.$spacing-small;
+    font-weight: 500;
+    color: v.$neutral-color-dark;
+    font-size: v.$font-size-small;
+
+    @include m.md {
+      font-size: v.$font-size-base;
+    }
+  }
+
+  .form-text {
+    margin-top: v.$spacing-xs;
+    font-size: v.$font-size-small;
+    color: v.$neutral-color-medium;
+  }
+
+  .invalid-feedback {
+    margin-top: v.$spacing-xs;
+    font-size: v.$font-size-small;
+    color: v.$error-color;
+  }
+}
+
+/* ===== CARTES RESPONSIVE ===== */
+.card {
+  @include m.card;
+
+  &.card-hover {
+    @include m.card-hover;
+  }
+}
+
+.card-body {
+  padding: v.$spacing-medium;
+
+  @include m.md {
+    padding: v.$spacing-large;
+  }
+}
+
+.card-header,
+.card-footer {
+  padding: v.$spacing-small v.$spacing-medium;
+  background-color: v.$neutral-color-lighter;
+  border-bottom: 1px solid rgba(v.$neutral-color-dark, 0.1);
+
+  @include m.md {
+    padding: v.$spacing-medium v.$spacing-large;
+  }
+}
+
+.card-footer {
+  border-top: 1px solid rgba(v.$neutral-color-dark, 0.1);
+  border-bottom: none;
+}
+
+/* ===== UTILITAIRES D'ESPACEMENT RESPONSIVE ===== */
+// Margins
+@each $size, $value in (
+  'xs': v.$spacing-xs,
+  'sm': v.$spacing-small,
+  'md': v.$spacing-medium,
+  'lg': v.$spacing-large,
+  'xl': v.$spacing-xl,
+  'xxl': v.$spacing-xxl
+) {
+  .m-#{$size} { margin: $value !important; }
+  .mt-#{$size} { margin-top: $value !important; }
+  .mb-#{$size} { margin-bottom: $value !important; }
+  .ml-#{$size} { margin-left: $value !important; }
+  .mr-#{$size} { margin-right: $value !important; }
+  .mx-#{$size} { margin-left: $value !important; margin-right: $value !important; }
+  .my-#{$size} { margin-top: $value !important; margin-bottom: $value !important; }
+
+  .p-#{$size} { padding: $value !important; }
+  .pt-#{$size} { padding-top: $value !important; }
+  .pb-#{$size} { padding-bottom: $value !important; }
+  .pl-#{$size} { padding-left: $value !important; }
+  .pr-#{$size} { padding-right: $value !important; }
+  .px-#{$size} { padding-left: $value !important; padding-right: $value !important; }
+  .py-#{$size} { padding-top: $value !important; padding-bottom: $value !important; }
+}
+
+/* ===== UTILITAIRES DE VISIBILITÉ RESPONSIVE ===== */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+.d-inline { display: inline !important; }
+.d-inline-block { display: inline-block !important; }
+
+@include m.sm {
+  .d-sm-none { display: none !important; }
+  .d-sm-block { display: block !important; }
+  .d-sm-flex { display: flex !important; }
+  .d-sm-inline { display: inline !important; }
+  .d-sm-inline-block { display: inline-block !important; }
+}
+
+@include m.md {
+  .d-md-none { display: none !important; }
+  .d-md-block { display: block !important; }
+  .d-md-flex { display: flex !important; }
+  .d-md-inline { display: inline !important; }
+  .d-md-inline-block { display: inline-block !important; }
+}
+
+@include m.lg {
+  .d-lg-none { display: none !important; }
+  .d-lg-block { display: block !important; }
+  .d-lg-flex { display: flex !important; }
+  .d-lg-inline { display: inline !important; }
+  .d-lg-inline-block { display: inline-block !important; }
+}
+
+/* ===== UTILITAIRES DE TEXTE RESPONSIVE ===== */
+.text-center { text-align: center !important; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+
+.text-xs { font-size: v.$font-size-xs !important; }
+.text-sm { font-size: v.$font-size-small !important; }
+.text-base { font-size: v.$font-size-base !important; }
+.text-lg { font-size: v.$font-size-large !important; }
+.text-xl { font-size: v.$font-size-xl !important; }
+.text-xxl { font-size: v.$font-size-xxl !important; }
+
+.text-truncate { @include m.text-truncate; }
+
+/* ===== UTILITAIRES FLEX RESPONSIVE ===== */
+.flex-center { @include m.flex-center; }
+.flex-between { @include m.flex-between; }
+
+.flex-column { flex-direction: column !important; }
+.flex-row { flex-direction: row !important; }
+
+@include m.md {
+  .flex-md-column { flex-direction: column !important; }
+  .flex-md-row { flex-direction: row !important; }
+}
+
+/* ===== STYLES POUR L'ACCESSIBILITÉ ===== */
+.sr-only {
+  @include m.visually-hidden;
+}
+
+// Focus styles améliorés
+button, input, select, textarea, a {
+  @include m.focus-outline;
+}
+
+/* ===== UTILITAIRES DE DÉBOGAGE ===== */
 .debug * {
   outline: 1px solid red;
 }
 
-// Empêcher le défilement du body lorsque le menu mobile est ouvert
+/* ===== STYLES POUR LE MENU MOBILE ===== */
 body.menu-open {
   overflow: hidden;
+
+  @include m.md {
+    overflow: auto; // Allow scroll on larger screens even with menu open
+  }
 }
