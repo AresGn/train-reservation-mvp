@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 // Palette de couleurs
@@ -8,6 +10,7 @@ $white: #FFFFFF;
 $dark-text: #212121;
 $success-color: #4CAF50;
 $error-color: #F44336;
+$border-color: rgba($dark-text, 0.15);
 
 // Mixins pour responsive design
 @mixin tablet {
@@ -26,42 +29,63 @@ $error-color: #F44336;
 .search-container {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  min-height: 100vh;
-  padding: 16px;
-  background-color: $neutral-light;
+  min-height: calc(100vh - 120px);
+  padding: 20px;
+  background: linear-gradient(135deg, rgba($primary-color, 0.05) 0%, rgba($secondary-color, 0.05) 100%), $neutral-light;
   font-family: 'Roboto', sans-serif;
+
+  @include tablet {
+    padding: 30px;
+  }
 }
 
 .search-card {
   width: 100%;
-  max-width: 600px;
+  max-width: 650px;
   background-color: $white;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 24px 16px;
-  margin-top: 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  padding: 28px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 
   @include tablet {
-    padding: 32px;
-    margin-top: 32px;
+    padding: 40px;
+    max-width: 750px;
+  }
+
+  @include desktop {
+    padding: 48px;
+    max-width: 850px;
   }
 }
 
 .title {
   font-size: 24px;
-  font-weight: 500;
-  color: $dark-text;
-  margin: 0 0 8px 0;
+  font-weight: 700;
+  color: $primary-color;
+  margin: 0 0 10px 0;
   text-align: center;
+
+  @include tablet {
+    font-size: 28px;
+  }
+  @include desktop {
+    font-size: 32px;
+  }
 }
 
 .subtitle {
   font-size: 16px;
   color: rgba($dark-text, 0.7);
-  margin: 0 0 24px 0;
+  margin: 0 0 32px 0;
   text-align: center;
+  line-height: 1.5;
+
+  @include tablet {
+    font-size: 18px;
+  }
 }
 
 .search-form {
@@ -71,29 +95,36 @@ $error-color: #F44336;
 .form-row {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 22px;
+  margin-bottom: 24px;
   
   @include tablet {
     flex-direction: row;
-    gap: 24px;
+    gap: 28px;
     
     .form-group {
       flex: 1;
+      margin-bottom: 0;
     }
   }
 }
 
 .form-group {
-  margin-bottom: 16px;
-}
-
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 6px;
-  color: $dark-text;
+  margin-bottom: 24px;
+  label {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: $dark-text;
+    svg {
+      margin-right: 8px;
+      color: $primary-color;
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
 .input-container {
@@ -106,113 +137,156 @@ input[type="date"],
 input[type="number"],
 select {
   width: 100%;
-  padding: 12px 16px;
+  padding: 15px 20px;
   font-size: 16px;
-  border: 1px solid rgba($dark-text, 0.2);
-  border-radius: 4px;
+  border: 1px solid $border-color;
+  border-radius: 8px;
   background-color: $white;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  color: $dark-text;
 
   &:focus {
     outline: none;
     border-color: $primary-color;
-    box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
+    background-color: $white;
   }
 
   &.is-invalid {
     border-color: $error-color;
+    box-shadow: 0 0 0 3px rgba($error-color, 0.2);
+    &:focus {
+        box-shadow: 0 0 0 3px rgba($error-color, 0.25);
+    }
   }
+  
+  &::placeholder {
+    color: rgba($dark-text, 0.45);
+    font-style: normal;
+  }
+}
+
+input[type="date"] {
+  padding-right: 18px;
+}
+
+select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%23212121%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+  padding-right: 40px;
 }
 
 // Stylisation de l'input de type number
 .number-input {
   display: flex;
   align-items: center;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  overflow: hidden;
 
   input[type="number"] {
     text-align: center;
-    -moz-appearance: textfield; // Supprimer les flèches dans Firefox
-    
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
+    border: none;
+    border-left: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+    border-radius: 0;
+    flex-grow: 1;
+    padding: 15px 10px;
+    height: 57px;
+    &:focus {
+        box-shadow: none;
+    }
+    &.is-invalid {
+        border-color: $error-color;
+        background-color: rgba($error-color, 0.05);
     }
   }
 
   .number-button {
-    background-color: $primary-color;
-    color: $white;
+    background-color: $neutral-light; 
+    color: $primary-color;
     border: none;
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+    width: 52px;
+    height: 57px;
+    font-size: 22px;
+    font-weight: 300;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+    }
     
     &:disabled {
-      background-color: rgba($primary-color, 0.4);
+      background-color: rgba($dark-text, 0.05);
+      color: rgba($dark-text, 0.4);
       cursor: not-allowed;
     }
-
-    &:first-child {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    &:last-child {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
   }
-
-  input[type="number"] {
-    border-radius: 0;
-    flex: 1;
+  &:has(input.is-invalid) {
+    border-color: $error-color;
+    box-shadow: 0 0 0 3px rgba($error-color, 0.2);
+  }
+  &:focus-within {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
   }
 }
 
 .invalid-feedback {
   color: $error-color;
-  font-size: 12px;
-  margin-top: 4px;
+  font-size: 13px;
+  margin-top: 6px;
+  display: block;
+  min-height: 1.2em;
+  font-weight: 500;
 }
 
 // Stylisation des listes de suggestions
 .suggestions-list {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 6px);
   left: 0;
-  width: 100%;
-  max-height: 200px;
+  right: 0;
+  max-height: 220px;
   overflow-y: auto;
   background-color: $white;
   border: 1px solid rgba($dark-text, 0.2);
-  border-top: none;
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
   
   .suggestion-item {
-    padding: 10px 16px;
+    padding: 14px 20px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-size: 16px;
     
-    &:hover {
-      background-color: rgba($primary-color, 0.1);
+    &:hover, &:focus {
+      background-color: $primary-color;
+      color: $white;
+      .station-name, .station-city { color: $white; }
     }
     
     .station-name {
       font-weight: 500;
+      color: $dark-text;
     }
     
     .station-city {
-      font-size: 12px;
-      color: rgba($dark-text, 0.6);
+      font-size: 14px;
+      color: rgba($dark-text, 0.65);
       margin-left: 8px;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba($dark-text, 0.08);
     }
   }
 }
@@ -220,47 +294,88 @@ select {
 // Bouton de recherche
 .search-button {
   width: 100%;
-  padding: 14px;
-  margin-top: 16px;
-  background-color: $primary-color;
+  padding: 16px 20px;
+  margin-top: 32px;
+  background-image: linear-gradient(to right, $primary-color 0%, color.adjust($primary-color, $lightness: 10%) 50%, $primary-color 100%);
+  background-size: 200% auto;
   color: $white;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 18px;
   font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  text-transform: none;
+  letter-spacing: 0.2px;
+  transition: background-position 0.5s, transform 0.15s, box-shadow 0.15s;
   
-  &:hover {
-    background-color: darken($primary-color, 10%);
+  &:hover:not(:disabled) {
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba($primary-color, 0.3);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0px);
+    box-shadow: 0 3px 6px rgba($primary-color, 0.2);
   }
   
   &:disabled {
-    background-color: rgba($primary-color, 0.6);
-    cursor: not-allowed;
+    background-image: none;
+    background-color: rgba($dark-text, 0.15);
+    color: rgba($dark-text, 0.5);
+    opacity: 1;
+  }
+
+  @include tablet {
+    width: auto;
+    min-width: 250px;
+    align-self: center;
+    padding: 18px 30px;
   }
 }
 
 // Informations tarifaires
 .pricing-info {
-  margin-top: 32px;
-  padding-top: 16px;
-  border-top: 1px solid rgba($dark-text, 0.1);
+  margin-top: 40px;
+  padding: 24px;
+  border: 1px dashed $border-color;
+  background-color: $white;
+  border-radius: 8px;
+  text-align: left;
   
   h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-    color: $dark-text;
+    font-size: 18px;
+    font-weight: 500;
+    color: $primary-color;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    svg {
+      margin-right: 10px;
+      width: 22px;
+      height: 22px;
+    }
   }
   
   ul {
-    padding-left: 16px;
+    padding-left: 0;
+    list-style: none;
     margin: 0;
     
     li {
-      font-size: 14px;
-      color: rgba($dark-text, 0.8);
-      margin-bottom: 4px;
+      font-size: 15px;
+      color: rgba($dark-text, 0.85);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      &::before {
+        content: '-';
+        margin-right: 10px;
+        color: $secondary-color;
+        font-weight: bold;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 }

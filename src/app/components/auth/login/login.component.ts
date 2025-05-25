@@ -48,14 +48,23 @@ export class LoginComponent implements OnInit {
     this.formSubmitted = true;
     this.loginError = false;
 
+    const { email, password } = this.loginForm.value;
+
+    // MVP: Auto-login for specific credentials
+    if (email === 'test@example.com' && password === 'Password123!') {
+      this.authService.mockLogin(email).subscribe(() => {
+        this.isSubmitting = false;
+        this.router.navigate(['/search']);
+      });
+      return;
+    }
+
     // Si le formulaire n'est pas valide, sortir de la fonction
     if (this.loginForm.invalid) {
       return;
     }
 
     this.isSubmitting = true;
-
-    const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
       next: (success) => {

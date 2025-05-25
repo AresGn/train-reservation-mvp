@@ -86,6 +86,17 @@ export class RegisterComponent implements OnInit {
   onSubmit(): void {
     this.formSubmitted = true;
 
+    const { email, password } = this.registerForm.value;
+
+    // MVP: Auto-login for specific credentials
+    if (email === 'test@example.com' && password === 'Password123!') {
+      this.authService.mockLogin(email).subscribe(() => {
+        this.isSubmitting = false;
+        this.router.navigate(['/search']);
+      });
+      return;
+    }
+
     // Si le formulaire n'est pas valide, sortir de la fonction
     if (this.registerForm.invalid) {
       return;

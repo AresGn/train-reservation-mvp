@@ -1,175 +1,184 @@
 <div class="register-container">
-  <div class="form-header">
-    <h1>Créer un compte</h1>
-    <p>Remplissez ce formulaire pour vous inscrire</p>
-  </div>
+  <div class="register-card">
+    <div class="form-header">
+      <h1>Créer un compte</h1>
+      <p>Remplissez ce formulaire pour vous inscrire</p>
+    </div>
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="form-grid">
-      <!-- Prénom -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-grid">
+        <!-- Prénom -->
+        <div class="form-group">
+          <label for="firstName">Prénom *</label>
+          <input 
+            type="text" 
+            id="firstName" 
+            formControlName="firstName"
+            [ngClass]="{'is-invalid': formSubmitted && f['firstName'].errors}"
+          >
+          <div class="validation-message" *ngIf="formSubmitted && f['firstName'].errors">
+            <span *ngIf="f['firstName'].errors['required']">Le prénom est requis</span>
+            <span *ngIf="f['firstName'].errors['minlength']">Le prénom doit contenir au moins 2 caractères</span>
+          </div>
+        </div>
+        
+        <!-- Nom -->
+        <div class="form-group">
+          <label for="lastName">Nom *</label>
+          <input 
+            type="text" 
+            id="lastName" 
+            formControlName="lastName"
+            [ngClass]="{'is-invalid': formSubmitted && f['lastName'].errors}"
+          >
+          <div class="validation-message" *ngIf="formSubmitted && f['lastName'].errors">
+            <span *ngIf="f['lastName'].errors['required']">Le nom est requis</span>
+            <span *ngIf="f['lastName'].errors['minlength']">Le nom doit contenir au moins 2 caractères</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email -->
       <div class="form-group">
-        <label for="firstName">Prénom *</label>
+        <label for="email">Email *</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          [ngClass]="{'is-invalid': formSubmitted && f['email'].errors}"
+        >
+        <div class="validation-message" *ngIf="formSubmitted && f['email'].errors">
+          <span *ngIf="f['email'].errors['required']">L'email est requis</span>
+          <span *ngIf="f['email'].errors['email']">Veuillez entrer une adresse email valide</span>
+        </div>
+      </div>
+      
+      <!-- Mot de passe -->
+      <div class="form-group">
+        <label for="password">Mot de passe *</label>
+        <div class="input-container password-container">
+          <input 
+            [type]="passwordVisible ? 'text' : 'password'" 
+            id="password" 
+            formControlName="password"
+            [ngClass]="{'is-invalid': formSubmitted && f['password'].errors}"
+            placeholder="Au moins 8 caractères"
+          >
+          <button 
+              type="button" 
+              class="toggle-password" 
+              (click)="togglePasswordVisibility()"
+            >
+              <span *ngIf="!passwordVisible">👁️</span>
+              <span *ngIf="passwordVisible">👁️‍🗨️</span>
+          </button>
+        </div>
+        <div class="validation-message" *ngIf="formSubmitted && f['password'].errors">
+          <span *ngIf="f['password'].errors['required']">Le mot de passe est requis</span>
+          <span *ngIf="f['password'].errors['minlength']">Le mot de passe doit contenir au moins 8 caractères</span>
+          <span *ngIf="f['password'].errors['weakPassword']">Le mot de passe ne respecte pas les conditions de sécurité</span>
+        </div>
+        
+        <!-- Instructions de mot de passe -->
+        <div class="password-strength" *ngIf="f['password'].value">
+          <p>Votre mot de passe doit contenir:</p>
+          <ul>
+            <li [ngClass]="{ 'valid': hasUpperCase(f['password'].value), 'invalid': !hasUpperCase(f['password'].value) }">
+              Au moins une lettre majuscule
+            </li>
+            <li [ngClass]="{ 'valid': hasLowerCase(f['password'].value), 'invalid': !hasLowerCase(f['password'].value) }">
+              Au moins une lettre minuscule
+            </li>
+            <li [ngClass]="{ 'valid': hasDigit(f['password'].value), 'invalid': !hasDigit(f['password'].value) }">
+              Au moins un chiffre
+            </li>
+            <li [ngClass]="{ 'valid': hasSpecialChar(f['password'].value), 'invalid': !hasSpecialChar(f['password'].value) }">
+              Au moins un caractère spécial (!&#64;#$%^&*)
+            </li>
+            <li [ngClass]="{ 'valid': f['password'].value.length >= 8, 'invalid': f['password'].value.length < 8 }">
+              Minimum 8 caractères
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <!-- Genre -->
+        <div class="form-group">
+          <label for="gender">Genre *</label>
+          <select 
+            id="gender" 
+            formControlName="gender"
+            [ngClass]="{'is-invalid': formSubmitted && f['gender'].errors}"
+          >
+            <option value="">Sélectionnez</option>
+            <option value="male">Homme</option>
+            <option value="female">Femme</option>
+            <option value="other">Autre</option>
+          </select>
+          <div class="validation-message" *ngIf="formSubmitted && f['gender'].errors">
+            <span *ngIf="f['gender'].errors['required']">Le genre est requis</span>
+          </div>
+        </div>
+        
+        <!-- Âge -->
+        <div class="form-group">
+          <label for="age">Âge *</label>
+          <input 
+            type="number" 
+            id="age" 
+            formControlName="age"
+            [ngClass]="{'is-invalid': formSubmitted && f['age'].errors}"
+          >
+          <div class="validation-message" *ngIf="formSubmitted && f['age'].errors">
+            <span *ngIf="f['age'].errors['required']">L'âge est requis</span>
+            <span *ngIf="f['age'].errors['min']">L'âge doit être supérieur à 0</span>
+            <span *ngIf="f['age'].errors['max']">L'âge doit être inférieur à 120</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Lieu de résidence -->
+      <div class="form-group">
+        <label for="residence">Lieu de résidence *</label>
         <input 
           type="text" 
-          id="firstName" 
-          formControlName="firstName"
-          [ngClass]="{'is-invalid': formSubmitted && f['firstName'].errors}"
+          id="residence" 
+          formControlName="residence"
+          [ngClass]="{'is-invalid': formSubmitted && f['residence'].errors}"
         >
-        <div class="validation-message" *ngIf="formSubmitted && f['firstName'].errors">
-          <span *ngIf="f['firstName'].errors['required']">Le prénom est requis</span>
-          <span *ngIf="f['firstName'].errors['minlength']">Le prénom doit contenir au moins 2 caractères</span>
+        <div class="validation-message" *ngIf="formSubmitted && f['residence'].errors">
+          <span *ngIf="f['residence'].errors['required']">Le lieu de résidence est requis</span>
         </div>
       </div>
       
-      <!-- Nom -->
+      <!-- Nationalité -->
       <div class="form-group">
-        <label for="lastName">Nom *</label>
+        <label for="nationality">Nationalité *</label>
         <input 
           type="text" 
-          id="lastName" 
-          formControlName="lastName"
-          [ngClass]="{'is-invalid': formSubmitted && f['lastName'].errors}"
+          id="nationality" 
+          formControlName="nationality"
+          [ngClass]="{'is-invalid': formSubmitted && f['nationality'].errors}"
         >
-        <div class="validation-message" *ngIf="formSubmitted && f['lastName'].errors">
-          <span *ngIf="f['lastName'].errors['required']">Le nom est requis</span>
-          <span *ngIf="f['lastName'].errors['minlength']">Le nom doit contenir au moins 2 caractères</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Email -->
-    <div class="form-group">
-      <label for="email">Email *</label>
-      <input 
-        type="email" 
-        id="email" 
-        formControlName="email"
-        [ngClass]="{'is-invalid': formSubmitted && f['email'].errors}"
-      >
-      <div class="validation-message" *ngIf="formSubmitted && f['email'].errors">
-        <span *ngIf="f['email'].errors['required']">L'email est requis</span>
-        <span *ngIf="f['email'].errors['email']">Veuillez entrer une adresse email valide</span>
-      </div>
-    </div>
-    
-    <!-- Mot de passe -->
-    <div class="form-group">
-      <label for="password">Mot de passe *</label>
-      <div class="input-container">
-        <input 
-          [type]="passwordVisible ? 'text' : 'password'" 
-          id="password" 
-          formControlName="password"
-          [ngClass]="{'is-invalid': formSubmitted && f['password'].errors}"
-        >
-        <span class="password-toggle" (click)="togglePasswordVisibility()">
-          {{ passwordVisible ? '👁️' : '👁️‍🗨️' }}
-        </span>
-      </div>
-      <div class="validation-message" *ngIf="formSubmitted && f['password'].errors">
-        <span *ngIf="f['password'].errors['required']">Le mot de passe est requis</span>
-        <span *ngIf="f['password'].errors['minlength']">Le mot de passe doit contenir au moins 8 caractères</span>
-        <span *ngIf="f['password'].errors['weakPassword']">Le mot de passe ne respecte pas les conditions de sécurité</span>
-      </div>
-      
-      <!-- Instructions de mot de passe -->
-      <div class="password-strength" *ngIf="f['password'].value">
-        <p>Votre mot de passe doit contenir:</p>
-        <ul>
-          <li [ngClass]="{ 'valid': hasUpperCase(f['password'].value), 'invalid': !hasUpperCase(f['password'].value) }">
-            Au moins une lettre majuscule
-          </li>
-          <li [ngClass]="{ 'valid': hasLowerCase(f['password'].value), 'invalid': !hasLowerCase(f['password'].value) }">
-            Au moins une lettre minuscule
-          </li>
-          <li [ngClass]="{ 'valid': hasDigit(f['password'].value), 'invalid': !hasDigit(f['password'].value) }">
-            Au moins un chiffre
-          </li>
-          <li [ngClass]="{ 'valid': hasSpecialChar(f['password'].value), 'invalid': !hasSpecialChar(f['password'].value) }">
-            Au moins un caractère spécial (!&#64;#$%^&*)
-          </li>
-          <li [ngClass]="{ 'valid': f['password'].value.length >= 8, 'invalid': f['password'].value.length < 8 }">
-            Minimum 8 caractères
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="form-grid">
-      <!-- Genre -->
-      <div class="form-group">
-        <label for="gender">Genre *</label>
-        <select 
-          id="gender" 
-          formControlName="gender"
-          [ngClass]="{'is-invalid': formSubmitted && f['gender'].errors}"
-        >
-          <option value="">Sélectionnez</option>
-          <option value="male">Homme</option>
-          <option value="female">Femme</option>
-          <option value="other">Autre</option>
-        </select>
-        <div class="validation-message" *ngIf="formSubmitted && f['gender'].errors">
-          <span *ngIf="f['gender'].errors['required']">Le genre est requis</span>
+        <div class="validation-message" *ngIf="formSubmitted && f['nationality'].errors">
+          <span *ngIf="f['nationality'].errors['required']">La nationalité est requise</span>
         </div>
       </div>
       
-      <!-- Âge -->
-      <div class="form-group">
-        <label for="age">Âge *</label>
-        <input 
-          type="number" 
-          id="age" 
-          formControlName="age"
-          [ngClass]="{'is-invalid': formSubmitted && f['age'].errors}"
-        >
-        <div class="validation-message" *ngIf="formSubmitted && f['age'].errors">
-          <span *ngIf="f['age'].errors['required']">L'âge est requis</span>
-          <span *ngIf="f['age'].errors['min']">L'âge doit être supérieur à 0</span>
-          <span *ngIf="f['age'].errors['max']">L'âge doit être inférieur à 120</span>
-        </div>
+      <!-- Bouton de soumission -->
+      <div class="form-actions">
+        <button type="submit" [disabled]="isSubmitting" class="submit-button">
+          <span *ngIf="!isSubmitting">S'inscrire</span>
+          <span *ngIf="isSubmitting" class="loading-spinner"></span>
+        </button>
       </div>
-    </div>
+    </form>
     
-    <!-- Lieu de résidence -->
-    <div class="form-group">
-      <label for="residence">Lieu de résidence *</label>
-      <input 
-        type="text" 
-        id="residence" 
-        formControlName="residence"
-        [ngClass]="{'is-invalid': formSubmitted && f['residence'].errors}"
-      >
-      <div class="validation-message" *ngIf="formSubmitted && f['residence'].errors">
-        <span *ngIf="f['residence'].errors['required']">Le lieu de résidence est requis</span>
-      </div>
+    <!-- Lien vers la page de connexion -->
+    <div class="login-link">
+      <p>Déjà un compte? <a routerLink="/login">Se connecter</a></p>
     </div>
-    
-    <!-- Nationalité -->
-    <div class="form-group">
-      <label for="nationality">Nationalité *</label>
-      <input 
-        type="text" 
-        id="nationality" 
-        formControlName="nationality"
-        [ngClass]="{'is-invalid': formSubmitted && f['nationality'].errors}"
-      >
-      <div class="validation-message" *ngIf="formSubmitted && f['nationality'].errors">
-        <span *ngIf="f['nationality'].errors['required']">La nationalité est requise</span>
-      </div>
-    </div>
-    
-    <!-- Bouton de soumission -->
-    <div class="form-actions">
-      <button type="submit" [disabled]="isSubmitting">
-        <span class="spinner" *ngIf="isSubmitting"></span>
-        {{ isSubmitting ? 'Inscription en cours...' : "S'inscrire" }}
-      </button>
-    </div>
-  </form>
-  
-  <!-- Lien vers la page de connexion -->
-  <div class="login-link">
-    Déjà un compte? <a routerLink="/login">Se connecter</a>
   </div>
 </div>
+

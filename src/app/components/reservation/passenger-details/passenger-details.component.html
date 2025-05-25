@@ -1,1 +1,103 @@
-<p>passenger-details works!</p>
+<div class="passenger-details-container">
+  <div class="progress-header">
+    <h2>Détails des Passagers</h2>
+    <!-- Vous pouvez ajouter une barre de progression ici si nécessaire -->
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <p>Chargement des informations...</p>
+    <!-- Ou un spinner -->
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && currentReservation" class="content-wrapper">
+    <div class="reservation-summary">
+      <h3>Récapitulatif de votre voyage</h3>
+      <div *ngIf="currentReservation.selectedTrain">
+        <p><strong>Train:</strong> {{ currentReservation.selectedTrain.trainNumber }} - {{ currentReservation.selectedTrain.trainType }}</p>
+        <p>
+          <strong>Départ:</strong> {{ currentReservation.departureStation?.name }} ({{ currentReservation.departureStation?.city }})
+          le {{ currentReservation.departureDateTime | date:'dd/MM/yyyy à HH:mm' }}
+        </p>
+        <p>
+          <strong>Arrivée:</strong> {{ currentReservation.arrivalStation?.name }} ({{ currentReservation.arrivalStation?.city }})
+          le {{ currentReservation.arrivalDateTime | date:'dd/MM/yyyy à HH:mm' }}
+        </p>
+        <p><strong>Durée:</strong> {{ currentReservation.selectedTrain.durationInMinutes | number:'1.0-0' }} minutes</p>
+        <p><strong>Nombre de passagers:</strong> {{ currentReservation.passengerCount }}</p>
+      </div>
+    </div>
+
+    <form [formGroup]="passengerForm" (ngSubmit)="onSubmit()">
+      <div formArrayName="passengers">
+        <div *ngFor="let passengerCtrl of passengersFormArray.controls; let i = index" [formGroupName]="i" class="passenger-card">
+          <h4>Passager {{ i + 1 }}</h4>
+          
+          <div class="form-field">
+            <label [for]="'name-' + i">Nom complet <span class="required">*</span></label>
+            <input [id]="'name-' + i" type="text" formControlName="name" placeholder="Ex: Jean Dupont">
+            <div *ngIf="passengersFormArray.at(i).get('name')?.invalid && (passengersFormArray.at(i).get('name')?.dirty || passengersFormArray.at(i).get('name')?.touched)" class="validation-error">
+              Le nom est requis.
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label [for]="'age-' + i">Âge <span class="required">*</span></label>
+              <input [id]="'age-' + i" type="number" formControlName="age" placeholder="Ex: 30">
+              <div *ngIf="passengersFormArray.at(i).get('age')?.invalid && (passengersFormArray.at(i).get('age')?.dirty || passengersFormArray.at(i).get('age')?.touched)" class="validation-error">
+                <span *ngIf="passengersFormArray.at(i).get('age')?.errors?.['required']">L'âge est requis.</span>
+                <span *ngIf="passengersFormArray.at(i).get('age')?.errors?.['min'] || passengersFormArray.at(i).get('age')?.errors?.['max']">L'âge doit être valide.</span>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label [for]="'category-' + i">Catégorie de passager <span class="required">*</span></label>
+              <select [id]="'category-' + i" formControlName="passengerCategory">
+                <option *ngFor="let category of passengerCategories" [value]="category">
+                  {{ getPassengerCategoryLabel(category) }}
+                </option>
+              </select>
+              <div *ngIf="passengersFormArray.at(i).get('passengerCategory')?.invalid && (passengersFormArray.at(i).get('passengerCategory')?.dirty || passengersFormArray.at(i).get('passengerCategory')?.touched)" class="validation-error">
+                La catégorie est requise.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label [for]="'seat-' + i">Préférence de siège (optionnel)</label>
+            <input [id]="'seat-' + i" type="text" formControlName="seatPreference" placeholder="Ex: Fenêtre, Couloir">
+          </div>
+
+          <div class="form-field">
+            <label [for]="'contact-' + i">Contact d'urgence (optionnel)</label>
+            <input [id]="'contact-' + i" type="tel" formControlName="emergencyContact" placeholder="Ex: +33 6 12 34 56 78">
+             <div *ngIf="passengersFormArray.at(i).get('emergencyContact')?.invalid && (passengersFormArray.at(i).get('emergencyContact')?.dirty || passengersFormArray.at(i).get('emergencyContact')?.touched)" class="validation-error">
+                Format de numéro invalide.
+            </div>
+          </div>
+
+          <div class="form-field price-display">
+            <label>Prix pour ce passager:</label>
+            <span>{{ passengersFormArray.at(i).get('price')?.value | currency:'EUR':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="total-price-summary">
+        <h4>Prix Total Estimé: {{ currentReservation.totalPrice | currency:'EUR':'symbol':'1.2-2' }}</h4>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="button-secondary" (click)="goBack()">Retour</button>
+        <button type="submit" class="button-primary" [disabled]="passengerForm.invalid || isLoading">
+          <span *ngIf="!isLoading">Continuer vers le paiement</span>
+          <span *ngIf="isLoading">Traitement...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

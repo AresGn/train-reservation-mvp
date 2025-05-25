@@ -66,6 +66,26 @@ export class AuthService {
     );
   }
 
+  mockLogin(email: string): Observable<boolean> {
+    // Simulate finding a user and setting auth state for MVP purposes
+    this.currentUser = {
+      id: 'test-user-mvp',
+      firstName: 'Test',
+      lastName: 'User',
+      email: email,
+      gender: 'other',
+      residence: 'MVP City',
+      age: 30,
+      nationality: 'Digital'
+    };
+    this.isAuthenticated = true;
+    this.authStateSubject.next(true);
+    if (this.isBrowser) {
+      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+    }
+    return of(true).pipe(delay(100)); // Simulate a quick login
+  }
+
   login(email: string, password: string): Observable<boolean> {
     // Simulation d'authentification pour le MVP
     return of(true).pipe(

@@ -1,0 +1,21 @@
+// Palette de Couleurs
+$primary-color: #3F51B5;      // Bleu indigo
+$secondary-color: #FF4081;    // Rose
+$neutral-light: #F5F5F5;     // Gris clair
+$white: #FFFFFF;             // Blanc
+$dark-text: #212121;          // Gris foncé
+
+// Couleurs d'accentuation
+$success-color: #4CAF50;      // Vert pour les succès
+$error-color: #F44336;        // Rouge pour les erreurs
+
+// Autres variables de base (peuvent être étendues)
+$base-font-family: 'Roboto', sans-serif;
+$base-font-size: 16px;
+$base-line-height: 1.6;
+
+$border-color: rgba($dark-text, 0.15); // Une couleur de bordure commune
+
+// Breakpoints (seront utilisés par les mixins)
+$breakpoint-tablet: 600px;
+$breakpoint-desktop: 960px; 

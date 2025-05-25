@@ -6,10 +6,20 @@ export interface Train {
   departureTime: string;
   arrivalTime: string;
   duration: string;
+  durationInMinutes?: number;
   trainType: string;
   basePrice: number;
   availableSeats: number;
   features: string[];
+}
+
+export interface TrainSearchCriteria {
+  departureLocation: string;
+  arrivalLocation: string;
+  departureDate: Date;
+  passengerCount: number;
+  passengerCategory: PassengerCategory;
+  // passengerCategory?: PassengerCategory; // Optionnel, si utilisé
 }
 
 export interface Station {
@@ -17,18 +27,20 @@ export interface Station {
   name: string;
   city: string;
   isMainStation: boolean;
+  latitude?: number;
+  longitude?: number;
 }
 
 // Liste des gares du réseau ferroviaire gabonais
 export const GABON_STATIONS: Station[] = [
   // Gares principales
-  { id: 'owendo', name: 'Owendo', city: 'Libreville', isMainStation: true },
-  { id: 'ndjole', name: 'Ndjolé', city: 'Ndjolé', isMainStation: true },
-  { id: 'lope', name: 'Lopé', city: 'Lopé', isMainStation: true },
-  { id: 'booue', name: 'Booué', city: 'Booué', isMainStation: true },
-  { id: 'lastourville', name: 'Lastourville', city: 'Lastourville', isMainStation: true },
-  { id: 'moanda', name: 'Moanda', city: 'Moanda', isMainStation: true },
-  { id: 'franceville', name: 'Franceville', city: 'Franceville', isMainStation: true },
+  { id: 'owendo', name: 'Owendo', city: 'Libreville', isMainStation: true, latitude: 0.3017, longitude: 9.5372 },
+  { id: 'ndjole', name: 'Ndjolé', city: 'Ndjolé', isMainStation: true, latitude: 0.1833, longitude: 10.7500 },
+  { id: 'lope', name: 'Lopé', city: 'Lopé', isMainStation: true, latitude: -0.1983, longitude: 11.5689 },
+  { id: 'booue', name: 'Booué', city: 'Booué', isMainStation: true, latitude: -0.0917, longitude: 11.9333 },
+  { id: 'lastourville', name: 'Lastourville', city: 'Lastourville', isMainStation: true, latitude: -0.8333, longitude: 12.7500 },
+  { id: 'moanda', name: 'Moanda', city: 'Moanda', isMainStation: true, latitude: -1.5667, longitude: 13.2000 },
+  { id: 'franceville', name: 'Franceville', city: 'Franceville', isMainStation: true, latitude: -1.6333, longitude: 13.5833 },
   
   // Gares intermédiaires
   { id: 'ntoum', name: 'N\'toum', city: 'N\'toum', isMainStation: false },

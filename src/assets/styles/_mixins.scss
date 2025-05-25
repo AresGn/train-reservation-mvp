@@ -1,0 +1,38 @@
+@use 'variables' as v; // Import variables to use breakpoints
+
+// Mixin pour tablette
+@mixin tablet {
+  @media (min-width: v.$breakpoint-tablet) {
+    @content;
+  }
+}
+
+// Mixin pour desktop
+@mixin desktop {
+  @media (min-width: v.$breakpoint-desktop) {
+    @content;
+  }
+}
+
+// Mixin générique pour mobile-first (peut être adapté)
+// Exemple : cibler les écrans jusqu'à la tablette (non inclus)
+@mixin mobile-only {
+  @media (max-width: (v.$breakpoint-tablet - 1px)) {
+    @content;
+  }
+}
+
+// Si mobile-first est utilisé comme un alias pour tablet ou une condition spécifique
+@mixin mobile-first($breakpoint-name) {
+  @if $breakpoint-name == tablette {
+    @include tablet {
+      @content;
+    }
+  } @else if $breakpoint-name == desktop {
+    @include desktop {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint #{$breakpoint-name} non reconnu pour le mixin mobile-first.";
+  }
+} 

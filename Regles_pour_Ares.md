@@ -194,3 +194,22 @@ const MOCK_TRAINS = [
 ---
 
 Ce document servira de guide pour ton travail sur le projet. N'hésite pas à suggérer des améliorations ou à demander des clarifications si nécessaire. 
+
+
+
+Absolument ! Voici un résumé de ce qui a été fait et les informations de connexion :
+Résumé des modifications récentes :
+Refonte des pages de Connexion et d'Inscription :
+J'ai amélioré le design des pages /login et /register pour qu'elles soient plus modernes, professionnelles et responsives (adaptées aux mobiles et aux ordinateurs de bureau).
+Les formulaires ont été réorganisés pour une meilleure expérience utilisateur.
+Les styles (couleurs, polices, espacements, ombres) ont été harmonisés avec la palette de couleurs et les directives typographiques de votre projet.
+J'ai amélioré l'apparence des champs de saisie, des messages d'erreur, des cases à cocher et des boutons.
+Identifiants de Connexion par Défaut (pour la simulation MVP) :
+Pour faciliter les tests et la simulation, j'ai mis en place un système où, si vous utilisez des identifiants spécifiques, vous serez automatiquement connecté.
+Ceci a été ajouté dans les fichiers login.component.ts et register.component.ts.
+Une méthode mockLogin a été ajoutée au service auth.service.ts pour gérer cette connexion simulée.
+Informations de connexion par défaut pour la simulation :
+Email : test@example.com
+Mot de passe : Password123!
+En utilisant ces informations sur la page de connexion ou d'inscription, l'application vous connectera et vous redirigera directement vers la page de recherche (/search).
+Maintenant, je vais me concentrer sur l'amélioration du design de la page search.component.html.

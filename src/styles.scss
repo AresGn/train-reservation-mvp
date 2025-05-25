@@ -1,5 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'sass:color';
+@use './assets/styles/variables' as *;
+@use './assets/styles/mixins' as *;
+// @use './assets/styles/buttons' as *; // Commented out as file may not exist
+
+@import 'ol/ol.css'; // Styles de base pour OpenLayers
 
 /* Reset et styles de base */
 * {

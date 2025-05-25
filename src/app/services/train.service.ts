@@ -18,22 +18,48 @@ export class TrainService {
       arrivalTime: '18:00',
       duration: '10h00',
       trainType: 'Express',
-      basePrice: 35000,
+      basePrice: 45000,
       availableSeats: 120,
-      features: ['WiFi', 'Restauration', 'Climatisation']
+      features: ['WiFi', 'Restauration', 'Climatisation', 'Siège inclinable']
     },
     {
       id: 'train-002',
       departureLocation: 'Owendo',
       arrivalLocation: 'Franceville',
       departureDate: new Date('2023-12-15'),
-      departureTime: '14:30',
-      arrivalTime: '01:30',
-      duration: '11h00',
+      departureTime: '10:30',
+      arrivalTime: '21:00',
+      duration: '10h30',
       trainType: 'Standard',
       basePrice: 30000,
       availableSeats: 150,
-      features: ['Climatisation']
+      features: ['Climatisation', 'Snack Bar']
+    },
+    {
+      id: 'train-006',
+      departureLocation: 'Owendo',
+      arrivalLocation: 'Franceville',
+      departureDate: new Date('2023-12-15'),
+      departureTime: '13:00',
+      arrivalTime: '22:00',
+      duration: '9h00',
+      trainType: 'Premium',
+      basePrice: 60000,
+      availableSeats: 80,
+      features: ['WiFi Premium', 'Repas inclus', 'Siège large', 'Priorité Embarquement']
+    },
+    {
+      id: 'train-007',
+      departureLocation: 'Owendo',
+      arrivalLocation: 'Franceville',
+      departureDate: new Date('2023-12-15'),
+      departureTime: '16:00',
+      arrivalTime: '03:00',
+      duration: '11h00',
+      trainType: 'Eco',
+      basePrice: 25000,
+      availableSeats: 200,
+      features: ['Climatisation basique']
     },
     {
       id: 'train-003',
@@ -82,6 +108,10 @@ export class TrainService {
     return GABON_STATIONS;
   }
 
+  getStationByName(name: string): Station | undefined {
+    return GABON_STATIONS.find(station => station.name.toLowerCase() === name.toLowerCase());
+  }
+
   getMainStations(): Station[] {
     return GABON_STATIONS.filter(station => station.isMainStation);
   }
@@ -100,17 +130,39 @@ export class TrainService {
   }
 
   private filterTrains(departureLocation: string, arrivalLocation: string, departureDate: Date): Train[] {
-    // Convertir la date reçue en format simple pour la comparaison (YYYY-MM-DD)
-    const searchDate = departureDate.toISOString().split('T')[0];
-    
+    const searchDateString = departureDate.toISOString().split('T')[0];
+    console.log(`Filter criteria: Departure=${departureLocation}, Arrival=${arrivalLocation}, Date=${departureDate.toISOString()} (Formatted as ${searchDateString})`);
+
     return this.mockTrains.filter(train => {
-      // Comparaison de la date (ignorer l'heure)
-      const trainDate = train.departureDate.toISOString().split('T')[0];
+      const trainDateString = train.departureDate.toISOString().split('T')[0];
+      const match = train.departureLocation.toLowerCase() === departureLocation.toLowerCase() &&
+                    train.arrivalLocation.toLowerCase() === arrivalLocation.toLowerCase() &&
+                    trainDateString === searchDateString;
       
-      return train.departureLocation === departureLocation &&
-             train.arrivalLocation === arrivalLocation &&
-             trainDate === searchDate;
+      // Log pour chaque train pour voir pourquoi il ne correspond pas
+      if (!match) {
+        console.log(
+          `Train ID ${train.id} NO MATCH: ` +
+          `DepLoc: ${train.departureLocation.toLowerCase()} vs ${departureLocation.toLowerCase()} (${train.departureLocation.toLowerCase() === departureLocation.toLowerCase()}), ` +
+          `ArrLoc: ${train.arrivalLocation.toLowerCase()} vs ${arrivalLocation.toLowerCase()} (${train.arrivalLocation.toLowerCase() === arrivalLocation.toLowerCase()}), ` +
+          `Date: ${trainDateString} vs ${searchDateString} (${trainDateString === searchDateString})`
+        );
+      } else {
+        console.log(`Train ID ${train.id} MATCHED!`);
+      }
+      return match;
     });
+  }
+
+  combineDateAndTime(date: Date, timeString: string, durationToAddInMinutes?: number): Date {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const newDate = new Date(date);
+    newDate.setHours(hours, minutes, 0, 0); // Initialise l'heure, les minutes, secondes et millisecondes
+
+    if (durationToAddInMinutes) {
+      newDate.setMinutes(newDate.getMinutes() + durationToAddInMinutes);
+    }
+    return newDate;
   }
 
   // Calculer le prix en fonction de la catégorie de passager

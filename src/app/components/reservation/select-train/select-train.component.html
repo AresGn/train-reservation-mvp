@@ -1,1 +1,82 @@
-<p>select-train works!</p>
+<div class="select-train-container">
+  <div class="select-train-card">
+    <div class="header-section">
+      <button routerLink="/search" class="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        Nouvelle recherche
+      </button>
+      <h1 class="title">Sélectionnez votre train</h1>
+      <p class="subtitle" *ngIf="searchCriteria">
+        {{ searchCriteria.departureLocation }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16px" height="16px" style="vertical-align: middle;"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg> {{ searchCriteria.arrivalLocation }} - {{ searchCriteria.departureDate | date: 'dd/MM/yyyy' }} - {{ searchCriteria.passengerCount }} passager(s)
+      </p>
+    </div>
+
+    <!-- Conteneur pour la carte OpenLayers -->
+    <div #mapElement class="map-container" id="map"></div>
+
+    <div class="controls-section">
+      <!-- Filtres -->
+      <div class="filters">
+        <h3 class="filter-title">Filtrer par type de train :</h3>
+        <div class="filter-options">
+          <label *ngFor="let type of trainTypes" class="checkbox-container">
+            <input type="checkbox" [(ngModel)]="selectedTrainTypes[type]" (change)="onFilterChange()">
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-label">{{ type }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tri -->
+      <div class="sort">
+        <label for="sortOptions" class="sort-label">Trier par :</label>
+        <select id="sortOptions" class="sort-select" (change)="onSortChange($event)" [(ngModel)]="currentSort">
+          <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+      <div class="spinner"></div>
+      <p>Recherche des trains disponibles...</p>
+    </div>
+
+    <div *ngIf="errorLoading && !isLoading" class="error-message-centered">
+      <p>Une erreur est survenue lors du chargement des trains. Veuillez réessayer.</p>
+      <button (click)="loadAvailableTrains()" class="retry-button">Réessayer</button>
+    </div>
+
+    <div *ngIf="!isLoading && !errorLoading && filteredTrains.length === 0" class="no-trains-message">
+      <p>Aucun train disponible pour les critères sélectionnés.</p>
+      <p>Essayez de modifier votre recherche ou revenez plus tard.</p>
+    </div>
+
+    <div class="train-list" *ngIf="!isLoading && !errorLoading && filteredTrains.length > 0">
+      <div *ngFor="let train of filteredTrains" class="train-card" (click)="selectTrainAndProceed(train)" tabindex="0" (keydown.enter)="selectTrainAndProceed(train)">
+        <div class="train-header">
+          <span class="train-type">{{ train.trainType }}</span>
+          <span class="train-price">{{ trainService.calculatePrice(train.basePrice, searchCriteria.passengerCategory) | currency:'XAF':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="train-details">
+          <div class="time-info">
+            <span class="departure-time">{{ train.departureTime }}</span>
+            <span class="arrow">→</span>
+            <span class="arrival-time">{{ train.arrivalTime }}</span>
+          </div>
+          <div class="location-info">
+            <span>{{ train.departureLocation }}</span>
+            <span>{{ train.arrivalLocation }}</span>
+          </div>
+          <div class="duration-info">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16px" height="16px"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            {{ train.duration }}
+          </div>
+        </div>
+        <div class="train-features" *ngIf="train.features && train.features.length > 0">
+          <span *ngFor="let feature of train.features" class="feature-tag">{{ feature }}</span>
+        </div>
+         <button class="select-button" (click)="selectTrainAndProceed(train); $event.stopPropagation();">Choisir ce train</button>
+      </div>
+    </div>
+  </div>
+</div>

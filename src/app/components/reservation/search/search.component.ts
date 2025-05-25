@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TrainService } from '../../../services/train.service';
 import { ReservationService, SearchCriteria } from '../../../services/reservation.service';
 import { Station, PassengerCategory } from '../../../models/train.model';
@@ -9,7 +9,7 @@ import { Station, PassengerCategory } from '../../../models/train.model';
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss'
 })
@@ -124,10 +124,12 @@ export class SearchComponent implements OnInit {
 
   onDepartureStationSelect(stationName: string): void {
     this.searchForm.patchValue({ departureLocation: stationName });
+    this.filteredDepartureStations = [];
   }
 
   onArrivalStationSelect(stationName: string): void {
     this.searchForm.patchValue({ arrivalLocation: stationName });
+    this.filteredArrivalStations = [];
   }
 
   get f() {
@@ -156,6 +158,10 @@ export class SearchComponent implements OnInit {
     
     // Navigation vers la page de sélection de train
     this.router.navigate(['/select-train']);
+
+    // Vider les listes de suggestions pour éviter les doublons après la navigation
+    this.filteredDepartureStations = [];
+    this.filteredArrivalStations = [];
   }
 
   // Utilitaire pour formater la date pour l'input HTML

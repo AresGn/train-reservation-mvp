@@ -1,181 +1,331 @@
 @use 'sass:color';
 
+// Palette de couleurs (doit être cohérente avec login.component.scss)
+$primary-color: #3F51B5;
+$secondary-color: #FF4081;
+$neutral-light: #F5F5F5;
+$white: #FFFFFF;
+$dark-text: #212121;
+$success-color: #4CAF50;
+$error-color: #F44336;
+
+// Mixins pour responsive design (identiques à login.component.scss)
+@mixin tablet {
+  @media (min-width: 600px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: 960px) {
+    @content;
+  }
+}
+
 .register-container {
-  padding: 1rem;
-  max-width: 100%;
-  margin: 0 auto;
-  
-  .form-header {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    
-    h1 {
-      color: #3F51B5;
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: $neutral-light;
+  font-family: 'Roboto', sans-serif;
+  min-height: calc(100vh - 120px); // Pour prendre en compte header/footer
+
+  @include tablet {
+    padding: 30px;
+  }
+}
+
+.register-card { // Similaire à .login-card
+  width: 100%;
+  max-width: 500px; // Un peu plus large pour le formulaire d'inscription
+  background-color: $white;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  margin-top: 20px; // Espace par rapport au haut
+  margin-bottom: 20px;
+
+  @include tablet {
+    padding: 40px;
+    max-width: 650px;
+  }
+
+  @include desktop {
+    padding: 48px;
+    max-width: 750px;
+  }
+}
+
+.form-header { // Renommé pour plus de clarté, anciennement .title et .subtitle
+  text-align: center;
+  margin-bottom: 28px;
+
+  h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: $primary-color;
+    margin: 0 0 12px 0;
+
+    @include tablet {
+      font-size: 26px;
+    }
+  }
+
+  p {
+    font-size: 15px;
+    color: rgba($dark-text, 0.75);
+    margin: 0;
+
+    @include tablet {
+      font-size: 17px;
+    }
+  }
+}
+
+.register-form { // Wrapper pour le formulaire
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: $dark-text;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 16px;
+    border: 1px solid rgba($dark-text, 0.25);
+    border-radius: 6px;
+    background-color: $neutral-light;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
+      background-color: $white;
+    }
+
+    &.is-invalid {
+      border-color: $error-color;
+      box-shadow: 0 0 0 3px rgba($error-color, 0.2);
     }
     
-    p {
-      color: #666;
-      font-size: 0.9rem;
+    &::placeholder {
+      color: rgba($dark-text, 0.5);
+      font-style: italic;
     }
   }
   
-  .form-group {
-    margin-bottom: 1rem;
-    
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      color: #333;
+  select {
+    appearance: none; // Supprimer l'apparence par défaut
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%23212121%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    padding-right: 40px; // Espace pour l'icône
+  }
+}
+
+.input-container.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input[type="password"], input[type="text"] { // S'assurer que ça s'applique aussi quand le type change
+    flex: 1;
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    bottom: 1px;
+    width: 48px;
+    background: transparent;
+    border: none;
+    border-left: 1px solid rgba($dark-text, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba($dark-text, 0.6);
+    border-radius: 0 6px 6px 0;
+
+    &:hover {
+      color: $primary-color;
+      background-color: rgba($primary-color, 0.05);
     }
-    
-    .input-container {
-      position: relative;
-      
-      .password-toggle {
-        position: absolute;
-        right: 0.75rem;
-        top: 0.6rem;
-        cursor: pointer;
-        color: #666;
-      }
-    }
-    
-    input, select {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-      
-      &:focus {
-        outline: none;
-        border-color: #3F51B5;
-        box-shadow: 0 0 0 1px rgba(63,81,181,0.25);
-      }
-      
-      &.is-invalid {
-        border-color: #F44336;
-      }
-    }
-    
-    .validation-message {
-      color: #F44336;
-      font-size: 0.8rem;
-      margin-top: 0.25rem;
-      min-height: 1rem;
+
+    span {
+      font-size: 20px;
     }
   }
-  
-  .password-strength {
-    margin: 0.5rem 0;
-    font-size: 0.8rem;
-    
-    ul {
-      padding-left: 1.2rem;
-      margin: 0.25rem 0;
+}
+
+.validation-message {
+  color: $error-color;
+  font-size: 13px;
+  margin-top: 6px;
+  display: block;
+  min-height: 1.2em; // Pour éviter les sauts de layout
+
+  span {
+    display: block;
+  }
+}
+
+.password-strength {
+  margin: 10px 0 15px 0;
+  font-size: 13px;
+  background-color: rgba($neutral-light, 0.7);
+  padding: 12px;
+  border-radius: 6px;
+
+  p {
+    margin: 0 0 8px 0;
+    font-weight: 500;
+    color: $dark-text;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s;
+
+    &::before {
+      content: '●'; // Utiliser un point ou une icône
+      margin-right: 8px;
+      font-size: 10px;
     }
-    
-    li {
-      margin-bottom: 0.25rem;
-      
-      &.valid {
-        color: #4CAF50;
-      }
-      
-      &.invalid {
-        color: #F44336;
-      }
+
+    &.valid {
+      color: $success-color;
+      &::before { color: $success-color; }
+    }
+
+    &.invalid {
+      color: $error-color;
+      &::before { color: $error-color; }
     }
   }
-  
-  .form-actions {
-    margin-top: 1.5rem;
-    
-    button {
-      width: 100%;
-      padding: 0.8rem;
-      background-color: #3F51B5;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      
-      &:hover {
-        background-color: color.adjust(#3F51B5, $lightness: -10%);
-      }
-      
-      &:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-      
-      .spinner {
-        display: inline-block;
-        width: 1rem;
-        height: 1rem;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-radius: 50%;
-        border-top-color: white;
-        animation: spin 1s ease-in-out infinite;
-        margin-right: 0.5rem;
-      }
-    }
+}
+
+.form-grid {
+  @include tablet {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px; // Espace entre colonnes uniquement
   }
-  
-  .login-link {
-    text-align: center;
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    
+}
+
+.form-actions {
+  margin-top: 28px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s, box-shadow 0.1s;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($primary-color, $lightness: -8%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  &:disabled {
+    background-color: rgba($primary-color, 0.5);
+    cursor: not-allowed;
+  }
+
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba($white, 0.3);
+    border-radius: 50%;
+    border-top-color: $white;
+    animation: spin 1s ease-in-out infinite;
+    vertical-align: middle;
+    margin-right: 8px; // Espace si le texte est à côté
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.login-link {
+  margin-top: 28px;
+  text-align: center;
+
+  p {
+    color: $dark-text;
+    font-size: 15px;
+
     a {
-      color: #3F51B5;
+      color: color.adjust($primary-color, $lightness: -10%);
       text-decoration: none;
       font-weight: 500;
-      
+
       &:hover {
         text-decoration: underline;
+        color: color.adjust($primary-color, $lightness: -10%);
       }
     }
   }
 }
 
-// Animation pour le spinner
-@keyframes spin {
-  to { transform: rotate(360deg); }
+// Styles pour les placeholders et messages d'erreur
+.form-group input.is-invalid + .validation-message,
+.form-group select.is-invalid + .validation-message {
+  display: block;
 }
 
-// Media queries pour les tablettes et desktop
-@media (min-width: 600px) {
-  .register-container {
-    padding: 2rem;
-    max-width: 500px;
-    
-    .form-header {
-      h1 {
-        font-size: 2rem;
-      }
+// Ajustements responsives spécifiques (si nécessaire, en plus des mixins généraux)
+@include tablet {
+  .form-header {
+    h1 {
+      font-size: 28px;
     }
-  }
-}
-
-@media (min-width: 960px) {
-  .register-container {
-    padding: 2.5rem;
-    max-width: 600px;
-    
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-gap: 1rem;
+    p {
+      font-size: 18px;
     }
   }
 }
